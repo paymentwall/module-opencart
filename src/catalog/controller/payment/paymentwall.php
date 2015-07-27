@@ -52,10 +52,14 @@ class ControllerPaymentPaymentwall extends Controller
                     'Order #' . $orderInfo['order_id']
                 )
             ),
-            array(
-                'email' => $orderInfo['email'],
-                'integration_module' => 'opencart',
-                'test_mode' => $this->config->get('paymentwall_test')
+            array_merge(
+                array(
+                    'success_url' => $this->url->link('checkout/success'),
+                    'email' => $orderInfo['email'],
+                    'integration_module' => 'opencart',
+                    'test_mode' => $this->config->get('paymentwall_test')
+                ),
+                $this->getUserProfileData($orderInfo)
             ));
 
         return $widget->getHtmlCode(array(
@@ -63,5 +67,20 @@ class ControllerPaymentPaymentwall extends Controller
             'height' => 400,
             'frameborder' => 0
         ));
+    }
+
+    private function getUserProfileData($orderInfo)
+    {
+        return array(
+            'customer[city]' => $orderInfo['payment_city'],
+            'customer[state]' => $orderInfo['payment_zone'],
+            'customer[address]' => $orderInfo['payment_address_1'],
+            'customer[country]' => $orderInfo['payment_iso_code_2'],
+            'customer[zip]' => $orderInfo['payment_postcode'],
+            'customer[username]' => $orderInfo['customer_id'] ? $orderInfo['customer_id'] : $_SERVER['REMOTE_ADDR'],
+            'customer[firstname]' => $orderInfo['payment_firstname'],
+            'customer[lastname]' => $orderInfo['payment_lastname'],
+            'email' => $orderInfo['email'],
+        );
     }
 }
