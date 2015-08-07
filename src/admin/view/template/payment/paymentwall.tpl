@@ -89,6 +89,22 @@
                         </td>
                     </tr>
                     <tr>
+                        <td><?php echo $entry_delivery;?></td>
+                        <td>
+                            <?php if ($paymentwall_delivery) { ?>
+                            <input type="radio" name="paymentwall_delivery" value="1" checked="checked" />
+                            <?php echo $text_enabled; ?>
+                            <input type="radio" name="paymentwall_delivery" value="0" />
+                            <?php echo $text_disabled; ?>
+                            <?php } else { ?>
+                            <input type="radio" name="paymentwall_delivery" value="1" />
+                            <?php echo $text_enabled; ?>
+                            <input type="radio" name="paymentwall_delivery" value="0" checked="checked" />
+                            <?php echo $text_disabled; ?>
+                            <?php } ?>
+                        </td>
+                    </tr>
+                    <tr>
                         <td><?php echo $entry_active;?></td>
                         <td>
                             <select name="paymentwall_status">
