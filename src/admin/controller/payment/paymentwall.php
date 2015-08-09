@@ -45,6 +45,7 @@ class ControllerPaymentPaymentwall extends Controller
         $data['entry_complete_status'] = $this->language->get('entry_complete_status');
         $data['entry_cancel_status'] = $this->language->get('entry_cancel_status');
         $data['entry_test'] = $this->language->get('entry_test');
+        $data['entry_delivery'] = $this->language->get('entry_delivery');
         $data['entry_active'] = $this->language->get('entry_active');
 
         $data['button_save'] = $this->language->get('button_save');
@@ -98,6 +99,10 @@ class ControllerPaymentPaymentwall extends Controller
             'paymentwall_cancel_status',
             $this->config->get('paymentwall_cancel_status'));
 
+        $data['paymentwall_delivery'] = $this->checkPostRequestIsset(
+            'paymentwall_delivery',
+            $this->config->get('paymentwall_delivery'));
+
         $data['paymentwall_test'] = $this->checkPostRequestIsset(
             'paymentwall_test',
             $this->config->get('paymentwall_test'));
@@ -145,6 +150,6 @@ class ControllerPaymentPaymentwall extends Controller
             $this->error['widget'] = $this->language->get('error_widget');
         }
 
-        return count($this->error) > 0 ? true : false;
+        return empty($this->error) ? true : false;
     }
 }
