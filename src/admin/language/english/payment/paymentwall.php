@@ -16,6 +16,7 @@ $_['entry_widget'] = 'Widget code:';
 $_['entry_complete_status'] = 'Complete Order Status:';
 $_['entry_cancel_status'] = 'Cancel Order Status:';
 $_['entry_test'] = 'Test mode:';
+$_['entry_delivery'] = 'Enable Delivery API:';
 $_['entry_active'] = 'Active:';
 
 // Error

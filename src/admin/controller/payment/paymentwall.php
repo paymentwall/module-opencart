@@ -15,6 +15,7 @@ class ControllerPaymentPaymentwall extends Controller
         $this->document->setTitle($this->language->get('heading_title'));
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+
             $this->model_setting_setting->editSetting('paymentwall', $this->request->post);
 
             $this->session->data['success'] = $this->language->get('text_success');
@@ -44,6 +45,7 @@ class ControllerPaymentPaymentwall extends Controller
         $this->data['entry_complete_status'] = $this->language->get('entry_complete_status');
         $this->data['entry_cancel_status'] = $this->language->get('entry_cancel_status');
         $this->data['entry_test'] = $this->language->get('entry_test');
+        $this->data['entry_delivery'] = $this->language->get('entry_delivery');
         $this->data['entry_active'] = $this->language->get('entry_active');
 
         $this->data['button_save'] = $this->language->get('button_save');
@@ -101,6 +103,10 @@ class ControllerPaymentPaymentwall extends Controller
             'paymentwall_test',
             $this->config->get('paymentwall_test'));
 
+        $this->data['paymentwall_delivery'] = $this->checkPostRequestIsset(
+            'paymentwall_delivery',
+            $this->config->get('paymentwall_delivery'));
+
         $this->data['paymentwall_status'] = $this->checkPostRequestIsset(
             'paymentwall_status',
             $this->config->get('paymentwall_status'));
@@ -146,6 +152,6 @@ class ControllerPaymentPaymentwall extends Controller
             $this->error['widget'] = $this->language->get('error_widget');
         }
 
-        return count($this->error) > 0 ? true : false;
+        return empty($this->error) ? true : false;
     }
 }
