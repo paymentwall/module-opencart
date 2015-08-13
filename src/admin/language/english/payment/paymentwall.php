@@ -13,10 +13,11 @@ $_['text_sale'] = 'Sale';
 $_['entry_key'] = 'Project key:';
 $_['entry_secret'] = 'Secret key:';
 $_['entry_widget'] = 'Widget code:';
-$_['entry_complete_status'] = 'Complete Order Status:';
-$_['entry_cancel_status'] = 'Cancel Order Status:';
+$_['entry_complete_status'] = 'Status after successful pingback:';
+$_['entry_cancel_status'] = 'Status after negative pingback:';
 $_['entry_test'] = 'Test mode:';
 $_['entry_delivery'] = 'Enable Delivery API:';
+$_['entry_success_url'] = 'Success Url:';
 $_['entry_active'] = 'Active:';
 
 // Error

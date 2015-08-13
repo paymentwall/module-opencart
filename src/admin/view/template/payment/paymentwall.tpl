@@ -105,6 +105,12 @@
                         </td>
                     </tr>
                     <tr>
+                        <td><?php echo $entry_success_url;?></td>
+                        <td>
+                            <input type="text" name="paymentwall_success_url" value="<?php echo $paymentwall_success_url; ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
                         <td><?php echo $entry_active;?></td>
                         <td>
                             <select name="paymentwall_status">
