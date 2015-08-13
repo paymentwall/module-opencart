@@ -122,6 +122,13 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="col-sm-2 control-label" for="paymentwall_success_url"><?php echo $entry_success_url; ?></label>
+                        <div class="col-sm-10">
+                            <input type="text" name="paymentwall_success_url" value="<?php echo $paymentwall_success_url; ?>" id="paymentwall_success_url" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="col-sm-2 control-label" for="paymentwall_status"><?php echo $entry_active; ?></label>
                         <div class="col-sm-10">
                             <select name="paymentwall_status" class="form-control">
