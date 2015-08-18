@@ -2,31 +2,14 @@
 
 class ControllerPaymentPaymentwall extends Controller
 {
-    const ORDER_PENDING_STATUS_ID = 1;
 
     public function index()
     {
         $this->language->load('payment/paymentwall');
-        $this->load->model('payment/paymentwall');
-        $this->load->model('checkout/order');
 
-        $this->data['text_credit_card'] = $this->language->get('text_credit_card');
-        $this->data['text_start_date'] = $this->language->get('text_start_date');
-        $this->data['text_issue'] = $this->language->get('text_issue');
-        $this->data['text_wait'] = $this->language->get('text_wait');
+        $this->data['pay_via_paymentwall'] = $this->language->get('pay_via_paymentwall');
+        $this->data['widget_link'] = $this->url->link('payment/paymentwall/widget', '', 'SSL');
 
-        $orderInfo = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-        $this->data['orderId'] = $orderInfo['order_id'];
-
-        // Update order status to pending
-        if (!$orderInfo['order_status']) {
-            $this->model_checkout_order->confirm($orderInfo['order_id'], self::ORDER_PENDING_STATUS_ID);
-        }
-
-        // Generate Widget
-        $this->data['url']['iframe'] = $this->generateWidget($orderInfo);
-
-        $this->data['button_confirm'] = $this->language->get('button_confirm');
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/paymentwall.tpl')) {
             $this->template = $this->config->get('config_template') . '/template/payment/paymentwall.tpl';
         } else {
@@ -36,25 +19,92 @@ class ControllerPaymentPaymentwall extends Controller
         $this->render();
     }
 
+    public function widget()
+    {
+        $this->load->model('checkout/order');
+        $this->load->model('payment/paymentwall');
+        $this->language->load('payment/paymentwall');
+
+        $orderInfo = array();
+
+        if (isset($this->session->data['order_id'])) {
+
+            $orderInfo = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+
+            $this->cart->clear();
+            unset($this->session->data['shipping_method']);
+            unset($this->session->data['shipping_methods']);
+            unset($this->session->data['payment_method']);
+            unset($this->session->data['payment_methods']);
+            unset($this->session->data['guest']);
+            unset($this->session->data['comment']);
+            unset($this->session->data['order_id']);
+            unset($this->session->data['coupon']);
+            unset($this->session->data['reward']);
+            unset($this->session->data['voucher']);
+            unset($this->session->data['vouchers']);
+            unset($this->session->data['totals']);
+
+        } else {
+            // Redirect to shopping cart
+            $this->redirect($this->url->link('checkout/cart'));
+        }
+
+        $this->document->setTitle($this->language->get('widget_title'));
+
+        $this->data['breadcrumbs'] = array();
+        $this->data['breadcrumbs'][] = array(
+            'href' => $this->url->link('common/home'),
+            'text' => $this->language->get('text_home'),
+            'separator' => false
+        );
+
+        $this->data['breadcrumbs'][] = array(
+            'text' => $this->language->get('widget_title'),
+            'separator' => $this->language->get('text_separator')
+        );
+
+        $this->data['widget_title'] = $this->language->get('widget_title');
+        $this->data['widget_notice'] = $this->language->get('widget_notice');
+        $this->data['iframe'] = $this->generateWidget($orderInfo);
+
+        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/paymentwall_widget.tpl')) {
+            $this->template = $this->config->get('config_template') . '/template/payment/paymentwall_widget.tpl';
+        } else {
+            $this->template = 'default/template/payment/paymentwall_widget.tpl';
+        }
+
+        $this->children = array(
+            'common/column_left',
+            'common/column_right',
+            'common/content_top',
+            'common/content_bottom',
+            'common/footer',
+            'common/header'
+        );
+
+        $this->response->setOutput($this->render());
+    }
+
     private function generateWidget($orderInfo)
     {
         // Init Paymentwall configs
         $this->model_payment_paymentwall->initPaymentwallConfig();
 
         $widget = new Paymentwall_Widget(
-            $this->customer->getId() ? $_SERVER["REMOTE_ADDR"] : $this->customer->getId(),
+            $this->customer->getId() ? $this->customer->getId() : $_SERVER["REMOTE_ADDR"],
             $this->config->get('paymentwall_widget'),
             array(
                 new Paymentwall_Product(
                     $orderInfo['order_id'],
-                    $orderInfo['total'] * $orderInfo['currency_value'],
+                    $orderInfo['currency_value'] > 0 ? $orderInfo['total'] * $orderInfo['currency_value'] : $orderInfo['total'], // when currency_value <= 0 changes to 1
                     $orderInfo['currency_code'],
                     'Order #' . $orderInfo['order_id']
                 )
             ),
             array_merge(
                 array(
-                    'success_url' => $this->url->link('checkout/success'),
+                    'success_url' => $this->config->get('paymentwall_success_url'),
                     'email' => $orderInfo['email'],
                     'integration_module' => 'opencart',
                     'test_mode' => $this->config->get('paymentwall_test')
@@ -64,7 +114,7 @@ class ControllerPaymentPaymentwall extends Controller
 
         return $widget->getHtmlCode(array(
             'width' => '100%',
-            'height' => 400,
+            'height' => 600,
             'frameborder' => 0
         ));
     }

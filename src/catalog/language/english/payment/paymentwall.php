@@ -1,8 +1,6 @@
 <?php
 // Text
-$_['text_title']           = 'Paymentwall';
-$_['text_credit_card']     = 'Payment Details';
-$_['text_start_date']      = '(if available)';
-$_['text_wait']            = 'Please wait!';
-
-?>
+$_['text_title'] = 'Paymentwall';
+$_['pay_via_paymentwall'] = 'Pay via Paymentwall';
+$_['widget_title'] = 'Paymentwall widget';
+$_['widget_notice'] = "Please don't click the back button nor refresh your browser. Otherwise, the information you entered will be lost.";
