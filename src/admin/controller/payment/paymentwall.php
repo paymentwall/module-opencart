@@ -4,6 +4,24 @@ class ControllerPaymentPaymentwall extends Controller
 {
     private $error = array();
 
+    // Generate default configs
+    public function install() {
+        $this->load->model('setting/setting');
+        $defaultConfigs = $this->model_setting_setting->getSetting('config');
+        $this->model_setting_setting->editSetting('paymentwall', array(
+            'paymentwall_complete_status' => $defaultConfigs['config_complete_status_id'],
+            'paymentwall_cancel_status' => 7,
+            'paymentwall_test' => 0,
+            'paymentwall_delivery' => 1,
+            'paymentwall_status' => 1,
+        ));
+    }
+
+    public function uninstall(){
+        $this->load->model('setting/setting');
+        $this->model_setting_setting->deleteSetting('paymentwall');
+    }
+
     /**
      * Index action
      */
@@ -46,6 +64,7 @@ class ControllerPaymentPaymentwall extends Controller
         $data['entry_cancel_status'] = $this->language->get('entry_cancel_status');
         $data['entry_test'] = $this->language->get('entry_test');
         $data['entry_delivery'] = $this->language->get('entry_delivery');
+        $data['entry_success_url'] = $this->language->get('entry_success_url');
         $data['entry_active'] = $this->language->get('entry_active');
 
         $data['button_save'] = $this->language->get('button_save');
@@ -103,6 +122,10 @@ class ControllerPaymentPaymentwall extends Controller
             'paymentwall_delivery',
             $this->config->get('paymentwall_delivery'));
 
+        $data['paymentwall_success_url'] = $this->checkPostRequestIsset(
+            'paymentwall_success_url',
+            $this->config->get('paymentwall_success_url'));
+
         $data['paymentwall_test'] = $this->checkPostRequestIsset(
             'paymentwall_test',
             $this->config->get('paymentwall_test'));
@@ -150,6 +173,6 @@ class ControllerPaymentPaymentwall extends Controller
             $this->error['widget'] = $this->language->get('error_widget');
         }
 
-        return empty($this->error) ? true : false;
+        return empty($this->error);
     }
 }
