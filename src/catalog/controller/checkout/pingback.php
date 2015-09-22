@@ -15,8 +15,6 @@ class ControllerCheckoutPingback extends Controller
         // Init Paymentwall configs
         $this->model_payment_paymentwall->initPaymentwallConfig();
 
-        unset($_GET['route']);
-
         $pingback = new Paymentwall_Pingback($_GET, $_SERVER['REMOTE_ADDR']);
         $order = $this->model_checkout_order->getOrder($pingback->getProduct()->getId());
 
