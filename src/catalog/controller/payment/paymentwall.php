@@ -2,13 +2,11 @@
 
 class ControllerPaymentPaymentwall extends Controller
 {
-    const ORDER_PENDING_STATUS_ID = 1;
-
     public function index()
     {
         $this->language->load('payment/paymentwall');
 
-        $data['pay_via_paymentwall'] = $this->language->get('pay_with_paymentwall');
+        $data['pay_via_paymentwall'] = $this->language->get('pay_via_paymentwall');
         $data['widget_link'] = $this->url->link('payment/paymentwall/widget', '', 'SSL');
 
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/paymentwall.tpl')) {

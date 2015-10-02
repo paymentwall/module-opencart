@@ -1,9 +1,10 @@
 # About Paymentwall Opencart module
+
 Paymentwall module for Opencart (v2.x) is a payment service for processing payments globally with over 120 payment methods worldwide: credit cards, bank transfers, prepaid cards, and mobile payments by SMS (direct carrier billing).
 
 
 ### Requirement
-* *Opencart v2.x*
+* **Opencart v2.x**
 * PHP 5.2.16 or later
 
 #Installation

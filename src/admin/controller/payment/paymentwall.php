@@ -5,7 +5,8 @@ class ControllerPaymentPaymentwall extends Controller
     private $error = array();
 
     // Generate default configs
-    public function install() {
+    public function install()
+    {
         $this->load->model('setting/setting');
         $defaultConfigs = $this->model_setting_setting->getSetting('config');
         $this->model_setting_setting->editSetting('paymentwall', array(
@@ -17,7 +18,8 @@ class ControllerPaymentPaymentwall extends Controller
         ));
     }
 
-    public function uninstall(){
+    public function uninstall()
+    {
         $this->load->model('setting/setting');
         $this->model_setting_setting->deleteSetting('paymentwall');
     }
