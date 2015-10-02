@@ -8,13 +8,12 @@ class ControllerCheckoutPingback extends Controller
         $this->load->model('checkout/order');
         $this->load->model('payment/paymentwall');
         $this->load->model('setting/setting');
-        
+
         $defaultConfigs = $this->model_setting_setting->getSetting('config');
 
         // Init Paymentwall configs
         $this->model_payment_paymentwall->initPaymentwallConfig();
 
-        unset($_GET['route']);
         $pingback = new Paymentwall_Pingback($_GET, $_SERVER['REMOTE_ADDR']);
         $order = $this->model_checkout_order->getOrder($pingback->getProduct()->getId());
 
@@ -31,9 +30,9 @@ class ControllerCheckoutPingback extends Controller
 
             if ($pingback->isDeliverable()) {
                 $this->model_payment_paymentwall->callDeliveryApi($order, $pingback->getReferenceId());
-                $this->model_checkout_order->update($pingback->getProduct()->getId(), $this->config->get('complete_status'));
+                $this->model_checkout_order->update($pingback->getProduct()->getId(), $this->config->get('complete_status'), 'Order approved!, Transaction Id: #' . $pingback->getReferenceId(), true);
             } elseif ($pingback->isCancelable()) {
-                $this->model_checkout_order->update($pingback->getProduct()->getId(), $this->config->get('cancel_status'));
+                $this->model_checkout_order->update($pingback->getProduct()->getId(), $this->config->get('cancel_status'), 'Order canceled!');
             }
 
             echo self::DEFAULT_PINGBACK_RESPONSE_SUCCESS;
