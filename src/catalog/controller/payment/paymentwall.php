@@ -25,12 +25,9 @@ class ControllerPaymentPaymentwall extends Controller
         $this->load->model('payment/paymentwall');
         $this->language->load('payment/paymentwall');
 
-        $orderInfo = array();
+        $orderInfo = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
         if (isset($this->session->data['order_id'])) {
-
-            $orderInfo = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-
             $this->cart->clear();
             unset($this->session->data['shipping_method']);
             unset($this->session->data['shipping_methods']);
