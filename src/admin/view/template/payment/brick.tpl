@@ -22,28 +22,66 @@
             <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
                 <table class="form">
                     <tr>
-                        <td><span class="required">*</span> <?php echo $entry_public_key; ?></td>
+                        <td colspan="2"><p><?php echo $text_brick_register ?></p></td>
+                    </tr>
+                    <tr>
                         <td>
-                            <input type="text" name="brick_public_key" value="<?php echo $brick_public_key; ?>"/>
+                            <span class="required">*</span> <?php echo $entry_public_key; ?>
+                        </td>
+                        <td>
+                            <input type="text" name="brick_public_key" value="<?php echo $brick_public_key; ?>" size="40"/>
+                            <?php if (!$error_key) { ?>
+                            <span class="error"><?php echo $error_key; ?></span>
+                            <?php } ?></td>
                         </td>
                     </tr>
                     <tr>
-                        <td><span class="required">*</span> <?php echo $entry_private_key; ?></td>
                         <td>
-                            <input type="text" name="brick_private_key" value="<?php echo $brick_private_key; ?>"/>
+                            <span class="required">*</span> <?php echo $entry_private_key; ?>
+                        </td>
+                        <td>
+                            <input type="text" name="brick_private_key" value="<?php echo $brick_private_key; ?>" size="40"/>
+                            <?php if (!$error_private) { ?>
+                            <span class="error"><?php echo $error_private; ?></span>
+                            <?php } ?></td>
                         </td>
                     </tr>
 
                     <tr>
-                        <td><span class="required">*</span> <?php echo $entry_public_test_key; ?></td>
                         <td>
-                            <input type="text" name="brick_public_test_key" value="<?php echo $brick_public_test_key; ?>"/>
+                            <?php echo $entry_public_test_key; ?>
+                        </td>
+                        <td>
+                            <input type="text" name="brick_public_test_key" value="<?php echo $brick_public_test_key; ?>" size="40"/>
                         </td>
                     </tr>
                     <tr>
-                        <td><span class="required">*</span> <?php echo $entry_private_test_key; ?></td>
                         <td>
-                            <input type="text" name="brick_private_test_key" value="<?php echo $brick_private_test_key; ?>"/>
+                            <?php echo $entry_private_test_key; ?>
+                        </td>
+                        <td>
+                            <input type="text" name="brick_private_test_key" value="<?php echo $brick_private_test_key; ?>" size="40"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span class="required">*</span> <?php echo $entry_paymentwall_secret_key; ?>
+                        </td>
+                        <td>
+                            <input type="text" name="brick_secret_key" value="<?php echo $brick_secret_key; ?>" size="40"/>
+                            <?php if (!$error_secret) { ?>
+                            <span class="error"><?php echo $error_secret; ?></span>
+                            <?php } ?></td>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <?php echo $entry_pingback_url; ?>
+                        </td>
+                        <td>
+                            <?php echo $text_pingback_url; ?>
                         </td>
                     </tr>
 
@@ -100,6 +138,10 @@
                                 <?php } ?>
                             </select>
                         </td>
+                    </tr>
+                    <tr>
+                        <td><?php echo $entry_sort_order; ?></td>
+                        <td><input type="text" name="brick_sort_order" value="<?php echo $brick_sort_order; ?>" size="3" /></td>
                     </tr>
                 </table>
             </form>

@@ -5,6 +5,11 @@ if (!class_exists('Paymentwall_Config'))
 
 class ModelPaymentPaymentwall extends Model
 {
+    /**
+     * @param $address
+     * @param $total
+     * @return array
+     */
     public function getMethod($address, $total)
     {
         $this->load->language('payment/paymentwall');
@@ -20,7 +25,10 @@ class ModelPaymentPaymentwall extends Model
         return $method_data;
     }
 
-    public function initPaymentwallConfig()
+    /**
+     * @param bool $pingback
+     */
+    public function initConfig($pingback = false)
     {
         Paymentwall_Config::getInstance()->set(array(
             'api_type' => Paymentwall_Config::API_GOODS,
@@ -31,21 +39,23 @@ class ModelPaymentPaymentwall extends Model
 
     /**
      * @param $order
+     * @return array
      */
-    public function callDeliveryApi($order, $ref)
+    public function callDeliveryApi($order, $refId)
     {
         if ($this->config->get('paymentwall_delivery')) {
             // Delivery Confirmation
             $delivery = new Paymentwall_GenerericApiObject('delivery');
-            $response = $delivery->post($this->prepareDeliveryData($order, $ref));
+            return $delivery->post($this->prepareDeliveryData($order, $refId));
         }
+        return [];
     }
 
     /**
      * @param $order
      * @return array
      */
-    private function prepareDeliveryData($order, $ref)
+    protected function prepareDeliveryData($order, $ref)
     {
         return array(
             'payment_id' => $ref,
@@ -66,6 +76,67 @@ class ModelPaymentPaymentwall extends Model
             'shipping_address[city]' => $order['shipping_city'],
             'reason' => 'none',
             'is_test' => $this->config->get('paymentwall_test') ? 1 : 0,
+        );
+    }
+
+    /**
+     * @param $orderInfo
+     * @param $customer
+     * @param $successUrl
+     * @return string
+     */
+    public function generateWidget($orderInfo, $customer, $successUrl)
+    {
+        $successUrl = $this->config->get('paymentwall_success_url')
+            ? $this->config->get('paymentwall_success_url')
+            : $successUrl;
+
+        $widget = new Paymentwall_Widget(
+            $customer->getId() ? $customer->getId() : $orderInfo['email'],
+            $this->config->get('paymentwall_widget'),
+            array(
+                new Paymentwall_Product(
+                    $orderInfo['order_id'],
+                    $orderInfo['currency_value'] > 0
+                        ? ($orderInfo['total'] * $orderInfo['currency_value'])
+                        : $orderInfo['total'], // when currency_value <= 0 changes to 1
+                    $orderInfo['currency_code'],
+                    'Order #' . $orderInfo['order_id']
+                )
+            ),
+            array_merge(
+                array(
+                    'success_url' => $successUrl,
+                    'email' => $orderInfo['email'],
+                    'integration_module' => 'opencart',
+                    'test_mode' => $this->config->get('paymentwall_test')
+                ),
+                $this->getUserProfileData($orderInfo)
+            ));
+
+        return $widget->getHtmlCode(array(
+            'width' => '100%',
+            'height' => 600,
+            'frameborder' => 0
+        ));
+    }
+
+    /**
+     * @param $orderInfo
+     * @return array
+     */
+    protected function getUserProfileData($orderInfo)
+    {
+        return array(
+            'customer[city]' => $orderInfo['payment_city'],
+            'customer[state]' => $orderInfo['payment_zone'],
+            'customer[address]' => $orderInfo['payment_address_1'],
+            'customer[country]' => $orderInfo['payment_iso_code_2'],
+            'customer[zip]' => $orderInfo['payment_postcode'],
+            'customer[username]' => $orderInfo['customer_id'] ? $orderInfo['customer_id'] : $orderInfo['email'],
+            'customer[firstname]' => $orderInfo['payment_firstname'],
+            'customer[lastname]' => $orderInfo['payment_lastname'],
+            'email' => $orderInfo['email'],
         );
     }
 }
