@@ -110,6 +110,17 @@
                         </td>
                     </tr>
                     <tr>
+                        <td><?php echo $entry_cancel_status;?></td>
+                        <td><select name="brick_cancel_status">
+                                <?php foreach($statuses as $key => $value) { ?>
+                                <option value="<?php echo $key; ?>" <?php if($key == $brick_cancel_status) echo ' selected="selected" ' ?> >
+                                <?php echo $value; ?>
+                                </option>
+                                <?php }?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td><?php echo $entry_test_mode;?></td>
                         <td>
                             <?php if ($brick_test_mode) { ?>

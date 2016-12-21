@@ -17,6 +17,7 @@ $_['entry_paymentwall_secret_key'] = 'Paymentwall Secret Key:';
 $_['entry_pingback_url'] = 'Pingback URL:';
 $_['entry_complete_status'] = 'Complete Order Status:';
 $_['entry_under_review_status'] = 'Under Review Order Status:';
+$_['entry_cancel_status'] = 'Cancel Order Status:';
 $_['entry_test_mode'] = 'Test Mode:';
 $_['entry_active'] = 'Active:';
 $_['entry_sort_order'] = 'Sort Order:';

@@ -13,8 +13,7 @@ class ControllerCheckoutPingback extends Controller
         $request = $this->request->request;
         $defaultConfigs = $this->model_setting_setting->getSetting('config');
         $orderId = $this->getOrderIdFromRequest($request);
-        $order = $this->getCheckoutOrderModel()->getOrder($orderId);
-        unset($request['route']);
+        $order = $this->getCheckoutOrderModel()->getOrder($orderId);        
 
         if (!$order) {
             die('Order invalid!');
@@ -24,7 +23,7 @@ class ControllerCheckoutPingback extends Controller
         $this->loadPaymentModel($order['payment_code']);
         $this->getPaymentModel()->initConfig(true);
 
-        $pingback = new Paymentwall_Pingback($request, $this->getRealIpAddress($this->request->server));
+        $pingback = new Paymentwall_Pingback($this->request->get, $this->getRealIpAddress($this->request->server));
 
         // Confirm order if status is null
         if (!$order['order_status']) {

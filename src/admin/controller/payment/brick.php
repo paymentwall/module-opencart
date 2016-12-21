@@ -13,6 +13,7 @@ class ControllerPaymentBrick extends Controller
         $defaultConfigs = $this->model_setting_setting->getSetting('config');
         $this->model_setting_setting->editSetting('brick', array(
             'brick_under_review_status' => 1, // Pending
+            'brick_cancel_status' => 7, // Cancel
             'brick_complete_status' => $defaultConfigs['config_complete_status_id'],
             'brick_test_mode' => 0,
             'brick_delivery' => 1,
@@ -134,6 +135,7 @@ class ControllerPaymentBrick extends Controller
 
         $this->data['brick_complete_status'] = $this->getPostData('brick_complete_status', $this->config->get('brick_complete_status'));
         $this->data['brick_under_review_status'] = $this->getPostData('brick_under_review_status', $this->config->get('brick_under_review_status'));
+        $this->data['brick_cancel_status'] = $this->getPostData('brick_cancel_status', $this->config->get('brick_cancel_status'));
 
         $this->data['brick_test_mode'] = $this->getPostData('brick_test_mode', $this->config->get('brick_test_mode'));
         $this->data['brick_status'] = $this->getPostData('brick_status', $this->config->get('brick_status'));
@@ -163,6 +165,7 @@ class ControllerPaymentBrick extends Controller
         $this->data['entry_pingback_url'] = $language->get('entry_pingback_url');
         $this->data['entry_complete_status'] = $language->get('entry_complete_status');
         $this->data['entry_under_review_status'] = $language->get('entry_under_review_status');
+        $this->data['entry_cancel_status'] = $language->get('entry_cancel_status');
         $this->data['entry_test_mode'] = $language->get('entry_test_mode');
 
         $this->data['entry_order_status'] = $language->get('entry_order_status');
