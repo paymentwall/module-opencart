@@ -143,7 +143,7 @@ class ModelPaymentBrick extends Model
             'customer[username]' => $orderInfo['customer_id'] ? $orderInfo['customer_id'] : $orderInfo['email'],
             'customer[firstname]' => $orderInfo['payment_firstname'],
             'customer[lastname]' => $orderInfo['payment_lastname'],
-            'customer[module_integration]' => 'opencart',
+            'customer[integration_module]' => 'opencart',
             'email' => $orderInfo['email'],
         );
     }

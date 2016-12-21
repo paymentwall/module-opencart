@@ -23,7 +23,7 @@ class ControllerCheckoutPingback extends Controller
         $this->loadPaymentModel($order['payment_code']);
         $this->getPaymentModel()->initConfig(true);
 
-        $pingback = new Paymentwall_Pingback($_GET, $this->getRealIpAddress($this->request->server));
+        $pingback = new Paymentwall_Pingback($this->request->get, $this->getRealIpAddress($this->request->server));
 
         // Confirm order if status is null
         if (!$order['order_status']) {
