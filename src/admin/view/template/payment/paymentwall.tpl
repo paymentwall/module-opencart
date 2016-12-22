@@ -129,6 +129,13 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="col-sm-2 control-label" for="paymentwall_sort_order"><?php echo $entry_sort_order; ?></label>
+                        <div class="col-sm-10">
+                            <input type="text" name="paymentwall_sort_order" value="<?php echo $paymentwall_sort_order; ?>" id="paymentwall_sort_order" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="col-sm-2 control-label" for="paymentwall_status"><?php echo $entry_active; ?></label>
                         <div class="col-sm-10">
                             <select name="paymentwall_status" class="form-control">

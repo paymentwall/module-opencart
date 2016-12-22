@@ -15,9 +15,12 @@ $_['entry_public_key'] = 'Public Key:';
 $_['entry_private_key'] = 'Private Key:';
 $_['entry_public_test_key'] = 'Public Test Key:';
 $_['entry_private_test_key'] = 'Private Test Key:';
+$_['entry_secret_key'] = 'Secret key:';
 $_['entry_complete_status'] = 'Complete Order Status:';
 $_['entry_under_review_status'] = 'Under Review Order Status:';
+$_['entry_cancel_status'] = 'Cancel Order Status:';
 $_['entry_test'] = 'Test mode:';
+$_['entry_sort_order'] = 'Sort Order:';
 $_['entry_active'] = 'Active:';
 
 // Error

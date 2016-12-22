@@ -7,40 +7,54 @@ class ControllerPaymentBrick extends Controller
         $this->language->load('payment/brick');
         $this->load->model('payment/brick');
 
-        $this->model_payment_brick->initBrickConfig();
-        $data['text_credit_card'] = $this->language->get('text_credit_card');
-        $data['text_start_date'] = $this->language->get('text_start_date');
-        $data['text_wait'] = $this->language->get('text_wait');
-        $data['text_loading'] = $this->language->get('text_loading');
+        $this->getPaymentModel()->initConfig();
 
-        $data['entry_cc_number'] = $this->language->get('entry_cc_number');
-        $data['entry_cc_expire_date'] = $this->language->get('entry_cc_expire_date');
-        $data['entry_cc_cvv2'] = $this->language->get('entry_cc_cvv2');
-        $data['button_confirm'] = $this->language->get('button_confirm');
+        $data = $this->prepareTranslationData();
+
         $data['public_key'] = Paymentwall_Config::getInstance()->getPublicKey();
-
-        $data['months'] = array();
-        for ($i = 1; $i <= 12; $i++) {
-            $data['months'][] = array(
-                'text' => sprintf('%02d', $i),
-                'value' => sprintf('%02d', $i)
-            );
-        }
-
-        $today = getdate();
-        $data['year_expire'] = array();
-        for ($i = $today['year']; $i < $today['year'] + 11; $i++) {
-            $data['year_expire'][] = array(
-                'text' => strftime('%Y', mktime(0, 0, 0, 1, 1, $i)),
-                'value' => strftime('%Y', mktime(0, 0, 0, 1, 1, $i))
-            );
-        }
 
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/brick.tpl')) {
             return $this->load->view($this->config->get('config_template') . '/template/payment/brick.tpl', $data);
         } else {
             return $this->load->view('default/template/payment/brick.tpl', $data);
         }
+    }
+
+    protected function prepareTranslationData()
+    {
+        $months = array();
+        for ($i = 1; $i <= 12; $i++) {
+            $months[] = array(
+                'text' => sprintf('%02d', $i),
+                'value' => sprintf('%02d', $i)
+            );
+        }
+
+        $today = getdate();
+        $yearExpire = array();
+        for ($i = $today['year']; $i < $today['year'] + 11; $i++) {
+            $yearExpire[] = array(
+                'text' => strftime('%Y', mktime(0, 0, 0, 1, 1, $i)),
+                'value' => strftime('%Y', mktime(0, 0, 0, 1, 1, $i))
+            );
+        }
+
+        return array(
+            'text_credit_card' => $this->language->get('text_credit_card'),
+            'text_start_date' => $this->language->get('text_start_date'),
+            'text_wait' => $this->language->get('text_wait'),
+            'text_loading' => $this->language->get('text_loading'),
+
+            'entry_cc_number' => $this->language->get('entry_cc_number'),
+            'entry_cc_expire_date' => $this->language->get('entry_cc_expire_date'),
+            'entry_cc_cvv2' => $this->language->get('entry_cc_cvv2'),
+            'button_confirm' => $this->language->get('button_confirm'),
+            'text_click_here' => $this->language->get('text_click_here'),
+            'text_3ds_step' => $this->language->get('text_3ds_step'),
+            
+            'months' => $months,
+            'year_expire' => $yearExpire
+        );
     }
 
     /**
@@ -80,17 +94,13 @@ class ControllerPaymentBrick extends Controller
                 );
                 $this->model_account_activity->addActivity('order_guest', $activity_data);
             }
+            
+            $this->getPaymentModel()->initConfig();
+            $charge = $this->getPaymentModel()->createChargePayment($orderInfo, $this->request->post);
+            $rawResponse = json_decode($charge->getRawResponseData(), true);
+            $response = json_decode($charge->getPublicData(), true);
 
-            $this->model_payment_brick->initBrickConfig();
-
-            $charge = new Paymentwall_Charge();
-            $charge->create(array_merge(
-                $this->prepareCardInfo($orderInfo),
-                $this->getUserProfileData($orderInfo)
-            ));
-            $response = $charge->getPublicData();
-
-            if ($charge->isSuccessful()) {
+            if ($charge->isSuccessful() && empty($rawResponse['secure'])) {
                 if ($charge->isCaptured()) {
                     $this->model_checkout_order->addOrderHistory(
                         $this->session->data['order_id'],
@@ -111,11 +121,14 @@ class ControllerPaymentBrick extends Controller
 
                 $data['status'] = 'success';
                 $data['redirect'] = $this->url->link('checkout/success');
+            } elseif(!empty($rawResponse['secure']['formHTML'])) {
+                $data['status'] = '3ds';
+                $data['message'] = $this->language->get('text_3ds_step');
+                $data['secure'] = $rawResponse['secure']['formHTML'];
             } else {
                 $response = json_decode($response, true);
                 $data['message'] = $response['error']['message'];
             }
-
         } else {
             $data['message'] =  $this->language->get('text_order_invalid');
         }
@@ -123,32 +136,25 @@ class ControllerPaymentBrick extends Controller
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($data));
     }
-
-    private function getUserProfileData($orderInfo)
+    
+    /**
+     * @return ModelPaymentBrick
+     */
+    protected function getPaymentModel()
     {
-        return array(
-            'customer[city]' => $orderInfo['payment_city'],
-            'customer[state]' => $orderInfo['payment_zone'],
-            'customer[address]' => $orderInfo['payment_address_1'],
-            'customer[country]' => $orderInfo['payment_iso_code_2'],
-            'customer[zip]' => $orderInfo['payment_postcode'],
-            'customer[username]' => $orderInfo['customer_id'] ? $orderInfo['customer_id'] : $_SERVER['REMOTE_ADDR'],
-            'customer[firstname]' => $orderInfo['payment_firstname'],
-            'customer[lastname]' => $orderInfo['payment_lastname'],
-            'email' => $orderInfo['email'],
-        );
+        if (!$this->model_payment_brick) {
+            $this->load->model('payment/brick');
+        }
+        return $this->model_payment_brick;
     }
-
-    private function prepareCardInfo($orderInfo)
+    /**
+     * @return ModelCheckoutOrder
+     */
+    protected function getCheckoutOrderModel()
     {
-        $post = $this->request->post;
-        return array(
-            'email' => $orderInfo['email'],
-            'amount' => number_format($orderInfo['total'], 2, '.', ''),
-            'currency' => $orderInfo['currency_code'],
-            'token' => $post['cc_brick_token'],
-            'fingerprint' => $post['cc_brick_fingerprint'],
-            'description' => 'Order #' . $orderInfo['order_id']
-        );
+        if (!$this->model_checkout_order) {
+            $this->load->model('checkout/order');
+        }
+        return $this->model_checkout_order;
     }
 }

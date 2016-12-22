@@ -21,7 +21,7 @@ class ModelPaymentPaymentwall extends Model
         return $method_data;
     }
 
-    public function initPaymentwallConfig()
+    public function initConfig()
     {
         Paymentwall_Config::getInstance()->set(array(
             'api_type' => Paymentwall_Config::API_GOODS,
@@ -38,8 +38,9 @@ class ModelPaymentPaymentwall extends Model
         if ($this->config->get('paymentwall_delivery')) {
             // Delivery Confirmation
             $delivery = new Paymentwall_GenerericApiObject('delivery');
-            $response = $delivery->post($this->prepareDeliveryData($order, $ref));
+            return $delivery->post($this->prepareDeliveryData($order, $ref));
         }
+        return array();
     }
 
     /**
@@ -69,6 +70,57 @@ class ModelPaymentPaymentwall extends Model
             'shipping_address[city]' => $order['shipping_city'],
             'reason' => 'none',
             'is_test' => $this->config->get('paymentwall_test') ? 1 : 0,
+        );
+    }
+
+    public function generateWidget($orderInfo, $customer, $successUrl)
+    {
+        // Init Paymentwall configs
+        $this->initConfig();
+
+        $successUrl = $this->config->get('paymentwall_success_url')
+                    ? $this->config->get('paymentwall_success_url')
+                    : $successUrl;
+
+        $widget = new Paymentwall_Widget(
+            !empty($customer->getId()) ? $customer->getId() : $_SERVER["REMOTE_ADDR"],
+            $this->config->get('paymentwall_widget'),
+            array(
+                new Paymentwall_Product(
+                    $orderInfo['order_id'],
+                    $orderInfo['currency_value'] > 0 ? $orderInfo['total'] * $orderInfo['currency_value'] : $orderInfo['total'], // when currency_value <= 0 changes to 1
+                    $orderInfo['currency_code'],
+                    'Order #' . $orderInfo['order_id']
+                )
+            ),
+            array_merge(
+                array(
+                    'success_url' => $successUrl,
+                    'integration_module' => 'opencart',
+                    'test_mode' => $this->config->get('paymentwall_test')
+                ),
+                $this->getUserProfileData($orderInfo)
+            ));
+
+        return $widget->getHtmlCode(array(
+            'width' => '100%',
+            'height' => 400,
+            'frameborder' => 0
+        ));
+    }
+
+    private function getUserProfileData($orderInfo)
+    {
+        return array(
+            'customer[city]' => $orderInfo['payment_city'],
+            'customer[state]' => $orderInfo['payment_zone'],
+            'customer[address]' => $orderInfo['payment_address_1'],
+            'customer[country]' => $orderInfo['payment_iso_code_2'],
+            'customer[zip]' => $orderInfo['payment_postcode'],
+            'customer[username]' => $orderInfo['customer_id'] ? $orderInfo['customer_id'] : $_SERVER['REMOTE_ADDR'],
+            'customer[firstname]' => $orderInfo['payment_firstname'],
+            'customer[lastname]' => $orderInfo['payment_lastname'],
+            'email' => $orderInfo['email'],
         );
     }
 }

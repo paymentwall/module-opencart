@@ -19,6 +19,7 @@ $_['entry_cancel_status'] = 'Cancel Order Status:';
 $_['entry_test'] = 'Test mode:';
 $_['entry_delivery'] = 'Enable Delivery API:';
 $_['entry_success_url'] = 'Success Url:';
+$_['entry_sort_order'] = 'Sort Order:';
 $_['entry_active'] = 'Active:';
 
 // Error
