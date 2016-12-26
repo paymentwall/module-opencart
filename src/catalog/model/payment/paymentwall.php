@@ -104,7 +104,7 @@ class ModelPaymentPaymentwall extends Model
 
         return $widget->getHtmlCode(array(
             'width' => '100%',
-            'height' => 400,
+            'height' => 600,
             'frameborder' => 0
         ));
     }
@@ -117,7 +117,7 @@ class ModelPaymentPaymentwall extends Model
             'customer[address]' => $orderInfo['payment_address_1'],
             'customer[country]' => $orderInfo['payment_iso_code_2'],
             'customer[zip]' => $orderInfo['payment_postcode'],
-            'customer[username]' => $orderInfo['customer_id'] ? $orderInfo['customer_id'] : $_SERVER['REMOTE_ADDR'],
+            'customer[username]' => $orderInfo['customer_id'] ? $orderInfo['customer_id'] : $orderInfo['email'],
             'customer[firstname]' => $orderInfo['payment_firstname'],
             'customer[lastname]' => $orderInfo['payment_lastname'],
             'email' => $orderInfo['email'],

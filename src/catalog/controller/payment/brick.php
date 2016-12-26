@@ -126,7 +126,6 @@ class ControllerPaymentBrick extends Controller
                 $data['message'] = $this->language->get('text_3ds_step');
                 $data['secure'] = $rawResponse['secure']['formHTML'];
             } else {
-                $response = json_decode($response, true);
                 $data['message'] = $response['error']['message'];
             }
         } else {
