@@ -80,20 +80,8 @@ class ControllerPaymentBrick extends Controller
                 );
 
                 if ($charge->isCaptured()) {
-                    $this->getCheckoutOrderModel()->update(
-                        $orderId,
-                        $this->config->get('brick_complete_status'),
-                        'The order approved, Transaction ID: #' . $charge->getId(),
-                        true
-                    );
                     $json['message'] = $this->language->get('text_order_processed');
                 } elseif ($charge->isUnderReview()) {
-                    $this->getCheckoutOrderModel()->update(
-                        $orderId,
-                        $this->config->get('brick_under_review_status'),
-                        'The order is under review!',
-                        true
-                    );
                     $this->data['message'] = $this->language->get('text_order_under_review');
                 }
 
