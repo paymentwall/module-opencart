@@ -1,4 +1,4 @@
-<div id="brick-errors" class="alert-danger" style="display: none;"></div>
+<div id="brick-errors" style="display: none;"></div>
 <form class="form-horizontal" id="brick-creditcard-form" method="post">
     <fieldset id="payment">
         <legend><?php echo $text_credit_card; ?></legend>

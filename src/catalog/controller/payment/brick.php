@@ -102,20 +102,8 @@ class ControllerPaymentBrick extends Controller
 
             if ($charge->isSuccessful() && empty($rawResponse['secure'])) {
                 if ($charge->isCaptured()) {
-                    $this->model_checkout_order->addOrderHistory(
-                        $this->session->data['order_id'],
-                        $this->config->get('brick_complete_status'),
-                        'The order approved, Transaction ID: #' . $charge->getId(),
-                        true
-                    );
                     $data['message'] = $this->language->get('text_order_processed');
                 } elseif ($charge->isUnderReview()) {
-                    $this->model_checkout_order->addOrderHistory(
-                        $this->session->data['order_id'],
-                        $this->config->get('brick_under_review_status'),
-                        'The order is under review!',
-                        true
-                    );
                     $data['message'] = $this->language->get('text_order_under_review');
                 }
 
