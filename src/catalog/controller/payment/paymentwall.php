@@ -47,6 +47,7 @@ class ControllerPaymentPaymentwall extends Controller
 
                 $this->model_account_activity->addActivity('order_guest', $activity_data);
             }
+            unset($this->session->data['order_id']);
         } else {
             // Redirect to shopping cart
             $this->response->redirect($this->url->link('checkout/cart'));

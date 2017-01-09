@@ -36,7 +36,7 @@ class ControllerCheckoutPingback extends Controller
                 }
             } elseif ($pingback->isCancelable()) {
                 if ($order['order_status_id'] != $this->config->get($order['payment_code'] . '_cancel_status')) {
-                    $this->getCheckoutOrderModel()->addOrderHistory($pingback->getProduct()->getId(), $this->config->get($order['payment_code'] .'_cancel_status'), 'Order Cancel !', true);
+                    $this->getCheckoutOrderModel()->addOrderHistory($pingback->getProduct()->getId(), $this->config->get($order['payment_code'] .'_cancel_status'), 'Order canceled!', true);
                 }
             } elseif ($pingback->isUnderReview()) {
                 if ($order['order_status_id'] != $this->config->get($order['payment_code'] . '_under_review_status')) {
