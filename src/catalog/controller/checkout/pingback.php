@@ -33,8 +33,8 @@ class ControllerCheckoutPingback extends Controller
         if ($pingback->validate()) {
 
             if ($pingback->isDeliverable()) {
-
                 $this->getPaymentModel()->callDeliveryApi($order, $pingback->getReferenceId());
+
                 if ($order['order_status_id'] != $this->config->get($order['payment_code'] . '_complete_status')) {
                     $this->getCheckoutOrderModel()->update(
                         $orderId,
@@ -45,17 +45,14 @@ class ControllerCheckoutPingback extends Controller
                 }
 
             } elseif ($pingback->isCancelable()) {
-
                 if ($order['order_status_id'] != $this->config->get($order['payment_code'] . '_cancel_status')) {
                     $this->getCheckoutOrderModel()
                         ->update($orderId, $this->config->get($order['payment_code'] .'_cancel_status'), 'Order canceled!', true);
                 }
-
             } elseif ($pingback->isUnderReview()) {
-
                 if ($order['order_status_id'] != $this->config->get($order['payment_code'] . '_under_review_status')) {
                     $this->getCheckoutOrderModel()
-                        ->update($orderId, $this->config->get($order['payment_code'] .'_under_review_status'), 'The order is under review!', true);
+                        ->update($orderId, $this->config->get($order['payment_code'] .'_under_review_status'), 'The order is under review!', false);
                 }
             }
 
