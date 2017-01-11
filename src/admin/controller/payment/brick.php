@@ -67,7 +67,6 @@ class ControllerPaymentBrick extends Controller
             'text_all_zones' => $this->language->get('text_all_zones'),
             'text_yes' => $this->language->get('text_yes'),
             'text_no' => $this->language->get('text_no'),
-            'text_authorization' => $this->language->get('text_authorization'),
             'text_sale' => $this->language->get('text_sale'),
 
             'entry_public_key' => $this->language->get('entry_public_key'),

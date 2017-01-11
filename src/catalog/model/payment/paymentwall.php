@@ -78,9 +78,10 @@ class ModelPaymentPaymentwall extends Model
         // Init Paymentwall configs
         $this->initConfig();
 
-        $successUrl = $this->config->get('paymentwall_success_url')
-                    ? $this->config->get('paymentwall_success_url')
-                    : $successUrl;
+        $successUrl = $successUrl
+                    ? $successUrl
+                    : $this->config->get('paymentwall_success_url');
+        $total = $orderInfo['currency_value'] > 0 ? $orderInfo['total'] * $orderInfo['currency_value'] : $orderInfo['total']; // when currency_value <= 0 changes to 1
 
         $widget = new Paymentwall_Widget(
             !empty($customer->getId()) ? $customer->getId() : $_SERVER["REMOTE_ADDR"],
@@ -88,7 +89,7 @@ class ModelPaymentPaymentwall extends Model
             array(
                 new Paymentwall_Product(
                     $orderInfo['order_id'],
-                    $orderInfo['currency_value'] > 0 ? $orderInfo['total'] * $orderInfo['currency_value'] : $orderInfo['total'], // when currency_value <= 0 changes to 1
+                    $total, 
                     $orderInfo['currency_code'],
                     'Order #' . $orderInfo['order_id']
                 )

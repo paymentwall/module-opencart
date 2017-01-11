@@ -7,7 +7,6 @@ $_['text_edit'] = 'Edit Brick Settings';
 $_['text_payment'] = 'Payment';
 $_['text_success'] = 'Success: You have modified Brick settings!';
 $_['text_brick'] = '<a target="_blank" href="https://api.paymentwall.com/pwaccount/signup?source=opencart&mode=merchant"><img src="view/image/payment/brick_pw_logo.png" alt="Create your Paymentwall account" title="Create your Paymentwall account" style="width: 150px; padding: 8px"/></a>';
-$_['text_authorization'] = 'Authorization';
 $_['text_sale'] = 'Sale';
 
 // Entry

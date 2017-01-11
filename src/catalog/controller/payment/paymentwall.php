@@ -56,10 +56,12 @@ class ControllerPaymentPaymentwall extends Controller
         $data = $this->prepareViewData($orderInfo, $this->customer);
 
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/paymentwall_widget.tpl')) {
-            $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/paymentwall_widget.tpl', $data));
-        } else {
-            $this->response->setOutput($this->load->view('default/template/payment/paymentwall_widget.tpl', $data));
+            $template = $this->config->get('config_template') . '/template/payment/paymentwall_widget.tpl';
+        } else { 
+            $template = 'default/template/payment/paymentwall_widget.tpl';
         }
+        $viewData = $this->load->view($template, $data);
+        $this->response->setOutput($viewData);
     }
 
     protected function prepareViewData($orderInfo, $customer)
