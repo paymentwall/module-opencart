@@ -64,10 +64,8 @@ class ControllerPaymentBrick extends Controller
             'text_edit' => $this->language->get('text_edit'),
             'text_enabled' => $this->language->get('text_enabled'),
             'text_disabled' => $this->language->get('text_disabled'),
-            'text_all_zones' => $this->language->get('text_all_zones'),
             'text_yes' => $this->language->get('text_yes'),
             'text_no' => $this->language->get('text_no'),
-            'text_sale' => $this->language->get('text_sale'),
 
             'entry_public_key' => $this->language->get('entry_public_key'),
             'entry_private_key' => $this->language->get('entry_private_key'),
@@ -78,6 +76,7 @@ class ControllerPaymentBrick extends Controller
             'entry_under_review_status' => $this->language->get('entry_under_review_status'),
             'entry_cancel_status' => $this->language->get('entry_cancel_status'),
             'entry_test' => $this->language->get('entry_test'),
+            'entry_delivery' => $this->language->get('entry_delivery'),
 
             'entry_transaction' => $this->language->get('entry_transaction'),
             'entry_total' => $this->language->get('entry_total'),
@@ -161,6 +160,10 @@ class ControllerPaymentBrick extends Controller
         $data['brick_sort_order'] = $this->getPostData(
             'brick_sort_order',
             $this->config->get('brick_sort_order'));
+
+        $data['brick_delivery'] = $this->getPostData(
+            'brick_delivery',
+            $this->config->get('brick_delivery'));
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');

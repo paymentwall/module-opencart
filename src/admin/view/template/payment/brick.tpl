@@ -28,9 +28,9 @@
             </div>
             <!--END HEADING-->
             <div class="panel-body">
+
                 <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-brick"
                       class="form-horizontal">
-
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
                                for="brick_public_key"><?php echo $entry_public_key; ?></label>
@@ -177,6 +177,22 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="brick_delivery"><?php echo $entry_delivery; ?></label>
+                        <div class="col-sm-10">
+                            <?php if ($brick_delivery) { ?>
+                            <input type="radio" name="brick_delivery" value="1" checked="checked"/>
+                            <?php echo $text_enabled; ?>
+                            <input type="radio" name="brick_delivery" value="0"/>
+                            <?php echo $text_disabled; ?>
+                            <?php } else { ?>
+                            <input type="radio" name="brick_delivery" value="1"/>
+                            <?php echo $text_enabled; ?>
+                            <input type="radio" name="brick_delivery" value="0" checked="checked"/>
+                            <?php echo $text_disabled; ?>
+                            <?php } ?>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

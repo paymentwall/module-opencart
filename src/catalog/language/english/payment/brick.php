@@ -4,7 +4,6 @@ $_['text_title'] = 'Brick Credit Card Processing (Powered by Paymentwall)';
 $_['text_wait'] = 'Please wait!';
 $_['text_credit_card'] = 'Pay via Brick (Powered by Paymentwall)';
 $_['text_loading'] = 'Loading';
-$_['text_oops'] = 'Loading';
 $_['text_order_processed'] = 'Your order is being processed';
 $_['text_order_under_review'] = 'Your order is under review';
 $_['text_order_invalid'] = 'Order invalid!';

@@ -29,6 +29,7 @@
             <!--END HEADING-->
             <div class="panel-body">
                 <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-paymentwall" class="form-horizontal">
+                  
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="paymentwall_key"><?php echo $entry_key; ?></label>
                         <div class="col-sm-10">
