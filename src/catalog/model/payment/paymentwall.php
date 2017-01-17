@@ -84,7 +84,7 @@ class ModelPaymentPaymentwall extends Model
         $total = $orderInfo['currency_value'] > 0 ? $orderInfo['total'] * $orderInfo['currency_value'] : $orderInfo['total']; // when currency_value <= 0 changes to 1
 
         $widget = new Paymentwall_Widget(
-            !empty($customer->getId()) ? $customer->getId() : $_SERVER["REMOTE_ADDR"],
+            !empty($customer->getId()) ? $customer->getId() : $orderInfo['email'],
             $this->config->get('paymentwall_widget'),
             array(
                 new Paymentwall_Product(
@@ -98,7 +98,8 @@ class ModelPaymentPaymentwall extends Model
                 array(
                     'success_url' => $successUrl,
                     'integration_module' => 'opencart',
-                    'test_mode' => $this->config->get('paymentwall_test')
+                    'test_mode' => $this->config->get('paymentwall_test'),
+                    'client_ip' => $_SERVER["REMOTE_ADDR"]
                 ),
                 $this->getUserProfileData($orderInfo)
             ));
