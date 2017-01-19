@@ -98,8 +98,7 @@ class ModelPaymentPaymentwall extends Model
                 array(
                     'success_url' => $successUrl,
                     'integration_module' => 'opencart',
-                    'test_mode' => $this->config->get('paymentwall_test'),
-                    'client_ip' => $_SERVER["REMOTE_ADDR"]
+                    'test_mode' => $this->config->get('paymentwall_test')
                 ),
                 $this->getUserProfileData($orderInfo)
             ));
