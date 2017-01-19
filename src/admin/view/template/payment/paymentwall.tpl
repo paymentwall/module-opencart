@@ -29,6 +29,7 @@
             <!--END HEADING-->
             <div class="panel-body">
                 <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-paymentwall" class="form-horizontal">
+                  
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="paymentwall_key"><?php echo $entry_key; ?></label>
                         <div class="col-sm-10">
@@ -125,6 +126,13 @@
                         <label class="col-sm-2 control-label" for="paymentwall_success_url"><?php echo $entry_success_url; ?></label>
                         <div class="col-sm-10">
                             <input type="text" name="paymentwall_success_url" value="<?php echo $paymentwall_success_url; ?>" id="paymentwall_success_url" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="paymentwall_sort_order"><?php echo $entry_sort_order; ?></label>
+                        <div class="col-sm-10">
+                            <input type="text" name="paymentwall_sort_order" value="<?php echo $paymentwall_sort_order; ?>" id="paymentwall_sort_order" class="form-control"/>
                         </div>
                     </div>
 

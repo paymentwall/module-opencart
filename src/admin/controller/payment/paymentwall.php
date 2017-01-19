@@ -15,6 +15,7 @@ class ControllerPaymentPaymentwall extends Controller
             'paymentwall_test' => 0,
             'paymentwall_delivery' => 1,
             'paymentwall_status' => 1,
+            'paymentwall_sort_order' => 1,
         ));
     }
 
@@ -41,36 +42,64 @@ class ControllerPaymentPaymentwall extends Controller
             $this->response->redirect($this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'));
         }
 
+        $translationData = $this->prepareTranslationData();
+        $viewData = $this->prepareViewData();
+        $data = array_merge($translationData, $viewData);
+
+        $this->response->setOutput($this->load->view('payment/paymentwall.tpl', $data));
+    }
+
+    /**
+     * @param $key
+     * @param $default
+     * @return mixed
+     */
+    protected function getPostData($key, $default)
+    {
+        return isset($this->request->post[$key]) ? $this->request->post[$key] : $default;
+    }
+
+    protected function prepareTranslationData()
+    {
+        return array(
+            'text_edit' => $this->language->get('text_edit'),
+            'text_enabled' => $this->language->get('text_enabled'),
+            'text_disabled' => $this->language->get('text_disabled'),
+            'text_yes' => $this->language->get('text_yes'),
+            'text_no' => $this->language->get('text_no'),           
+
+            'entry_key' => $this->language->get('entry_key'),
+            'entry_secret' => $this->language->get('entry_secret'),
+            'entry_widget' => $this->language->get('entry_widget'),
+            'entry_transaction' => $this->language->get('entry_transaction'),
+            'entry_total' => $this->language->get('entry_total'),
+            'entry_order_status' => $this->language->get('entry_order_status'),
+            'entry_geo_zone' => $this->language->get('entry_geo_zone'),
+            'entry_status' => $this->language->get('entry_status'),
+            'entry_sort_order' => $this->language->get('entry_sort_order'),
+            'entry_complete_status' => $this->language->get('entry_complete_status'),
+            'entry_cancel_status' => $this->language->get('entry_cancel_status'),
+            'entry_test' => $this->language->get('entry_test'),
+            'entry_delivery' => $this->language->get('entry_delivery'),
+            'entry_success_url' => $this->language->get('entry_success_url'),
+            'entry_sort_order' => $this->language->get('entry_sort_order'),
+            'entry_active' => $this->language->get('entry_active'),
+
+            'button_save' => $this->language->get('button_save'),
+            'button_cancel' => $this->language->get('button_cancel')
+        );
+    }
+
+    /**
+     * Prepare view data
+     */
+    protected function prepareViewData()
+    {
         $this->document->setTitle($this->language->get('heading_title'));
+
+        $data = array();
+
         $data['heading_title'] = $this->language->get('heading_title');
-
-        $data['text_edit'] = $this->language->get('text_edit');
-        $data['text_enabled'] = $this->language->get('text_enabled');
-        $data['text_disabled'] = $this->language->get('text_disabled');
-        $data['text_all_zones'] = $this->language->get('text_all_zones');
-        $data['text_yes'] = $this->language->get('text_yes');
-        $data['text_no'] = $this->language->get('text_no');
-        $data['text_authorization'] = $this->language->get('text_authorization');
-        $data['text_sale'] = $this->language->get('text_sale');
-
-        $data['entry_key'] = $this->language->get('entry_key');
-        $data['entry_secret'] = $this->language->get('entry_secret');
-        $data['entry_widget'] = $this->language->get('entry_widget');
-        $data['entry_transaction'] = $this->language->get('entry_transaction');
-        $data['entry_total'] = $this->language->get('entry_total');
-        $data['entry_order_status'] = $this->language->get('entry_order_status');
-        $data['entry_geo_zone'] = $this->language->get('entry_geo_zone');
-        $data['entry_status'] = $this->language->get('entry_status');
-        $data['entry_sort_order'] = $this->language->get('entry_sort_order');
-        $data['entry_complete_status'] = $this->language->get('entry_complete_status');
-        $data['entry_cancel_status'] = $this->language->get('entry_cancel_status');
-        $data['entry_test'] = $this->language->get('entry_test');
-        $data['entry_delivery'] = $this->language->get('entry_delivery');
-        $data['entry_success_url'] = $this->language->get('entry_success_url');
-        $data['entry_active'] = $this->language->get('entry_active');
-
-        $data['button_save'] = $this->language->get('button_save');
-        $data['button_cancel'] = $this->language->get('button_cancel');
 
         $data['statuses'] = $this->model_payment_paymentwall->getAllStatuses();
 
@@ -100,64 +129,58 @@ class ControllerPaymentPaymentwall extends Controller
         $data['action'] = $this->url->link('payment/paymentwall', 'token=' . $this->session->data['token'], 'SSL');
         $data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
 
-        $data['paymentwall_key'] = $this->checkPostRequestIsset(
+        $data['paymentwall_key'] = $this->getPostData(
             'paymentwall_key',
             $this->config->get('paymentwall_key'));
 
-        $data['paymentwall_secret'] = $this->checkPostRequestIsset(
+        $data['paymentwall_secret'] = $this->getPostData(
             'paymentwall_secret',
             $this->config->get('paymentwall_secret'));
 
-        $data['paymentwall_widget'] = $this->checkPostRequestIsset(
+        $data['paymentwall_widget'] = $this->getPostData(
             'paymentwall_widget',
             $this->config->get('paymentwall_widget'));
 
-        $data['paymentwall_complete_status'] = $this->checkPostRequestIsset(
+        $data['paymentwall_complete_status'] = $this->getPostData(
             'paymentwall_complete_status',
             $this->config->get('paymentwall_complete_status'));
 
-        $data['paymentwall_cancel_status'] = $this->checkPostRequestIsset(
+        $data['paymentwall_cancel_status'] = $this->getPostData(
             'paymentwall_cancel_status',
             $this->config->get('paymentwall_cancel_status'));
 
-        $data['paymentwall_delivery'] = $this->checkPostRequestIsset(
+        $data['paymentwall_delivery'] = $this->getPostData(
             'paymentwall_delivery',
             $this->config->get('paymentwall_delivery'));
 
-        $data['paymentwall_success_url'] = $this->checkPostRequestIsset(
+        $data['paymentwall_success_url'] = $this->getPostData(
             'paymentwall_success_url',
             $this->config->get('paymentwall_success_url'));
 
-        $data['paymentwall_test'] = $this->checkPostRequestIsset(
+        $data['paymentwall_test'] = $this->getPostData(
             'paymentwall_test',
             $this->config->get('paymentwall_test'));
 
-        $data['paymentwall_status'] = $this->checkPostRequestIsset(
+        $data['paymentwall_status'] = $this->getPostData(
             'paymentwall_status',
             $this->config->get('paymentwall_status'));
+
+        $data['paymentwall_sort_order'] = $this->getPostData(
+            'paymentwall_sort_order',
+            $this->config->get('paymentwall_sort_order'));
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
 
-        $this->response->setOutput($this->load->view('payment/paymentwall.tpl', $data));
-    }
-
-    /**
-     * @param $key
-     * @param $default
-     * @return mixed
-     */
-    private function checkPostRequestIsset($key, $default)
-    {
-        return isset($this->request->post[$key]) ? $this->request->post[$key] : $default;
+        return $data;
     }
 
     /**
      * Validator
      * @return bool
      */
-    private function validate()
+    protected function validate()
     {
         if (!$this->user->hasPermission('modify', 'payment/paymentwall')) {
             $this->error['warning'] = $this->language->get('error_permission');

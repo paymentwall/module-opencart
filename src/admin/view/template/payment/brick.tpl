@@ -28,9 +28,9 @@
             </div>
             <!--END HEADING-->
             <div class="panel-body">
+
                 <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-brick"
                       class="form-horizontal">
-
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
                                for="brick_public_key"><?php echo $entry_public_key; ?></label>
@@ -74,6 +74,17 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
+                               for="brick_secret_key"><?php echo $entry_secret_key; ?></label>
+
+                        <div class="col-sm-10">
+                            <input type="text" name="brick_secret_key"
+                                   value="<?php echo $brick_secret_key; ?>"
+                                   id="brick_secret_key" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
                                for="brick_complete_status"><?php echo $entry_complete_status; ?></label>
 
                         <div class="col-sm-10">
@@ -105,6 +116,22 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="brick_cancel_status"><?php echo $entry_cancel_status; ?></label>
+
+                        <div class="col-sm-10">
+                            <select name="brick_cancel_status" id="brick_cancel_status" class="form-control">
+                                <?php foreach($statuses as $key => $value) { ?>
+                                <option value="<?php echo $key; ?>"
+                                <?php if($key == $brick_cancel_status) echo ' selected="selected" ' ?> >
+                                <?php echo $value; ?>
+                                </option>
+                                <?php }?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="col-sm-2 control-label" for="brick_test_mode"><?php echo $entry_test; ?></label>
 
                         <div class="col-sm-10">
@@ -119,6 +146,17 @@
                             <input type="radio" name="brick_test_mode" value="0" checked="checked"/>
                             <?php echo $text_disabled; ?>
                             <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="brick_sort_order"><?php echo $entry_sort_order; ?></label>
+
+                        <div class="col-sm-10">
+                            <input type="text" name="brick_sort_order"
+                                   value="<?php echo $brick_sort_order; ?>"
+                                   id="brick_sort_order" class="form-control"/>
                         </div>
                     </div>
 
@@ -139,6 +177,22 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="brick_delivery"><?php echo $entry_delivery; ?></label>
+                        <div class="col-sm-10">
+                            <?php if ($brick_delivery) { ?>
+                            <input type="radio" name="brick_delivery" value="1" checked="checked"/>
+                            <?php echo $text_enabled; ?>
+                            <input type="radio" name="brick_delivery" value="0"/>
+                            <?php echo $text_disabled; ?>
+                            <?php } else { ?>
+                            <input type="radio" name="brick_delivery" value="1"/>
+                            <?php echo $text_enabled; ?>
+                            <input type="radio" name="brick_delivery" value="0" checked="checked"/>
+                            <?php echo $text_disabled; ?>
+                            <?php } ?>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

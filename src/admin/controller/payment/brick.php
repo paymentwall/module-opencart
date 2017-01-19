@@ -10,9 +10,11 @@ class ControllerPaymentBrick extends Controller
         $defaultConfigs = $this->model_setting_setting->getSetting('config');
         $this->model_setting_setting->editSetting('brick', array(
             'brick_under_review_status' => 1, // Pending
+            'brick_cancel_status' => 7, // Cancel
             'brick_complete_status' => $defaultConfigs['config_complete_status_id'],
             'brick_test_mode' => 0,
             'brick_status' => 1, // Pending
+            'brick_sort_order' => 1
         ));
     }
 
@@ -36,37 +38,61 @@ class ControllerPaymentBrick extends Controller
             $this->response->redirect($this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'));
         }
 
+        $translationData = $this->prepareTranslationData();
+        $viewData = $this->prepareViewData();
+        $data = array_merge($translationData, $viewData);
+
+        $this->response->setOutput($this->load->view('payment/brick.tpl', $data));
+    }
+
+    /**
+     * @param $key
+     * @param $default
+     * @return mixed
+     */
+    private function getPostData($key, $default)
+    {
+        return isset($this->request->post[$key]) ? $this->request->post[$key] : $default;
+    }
+
+    protected function prepareTranslationData()
+    {
         $this->document->setTitle($this->language->get('heading_title'));
-        $data['heading_title'] = $this->language->get('heading_title');
+        return array(
+            'heading_title' => $this->language->get('heading_title'),
 
-        $data['text_edit'] = $this->language->get('text_edit');
-        $data['text_enabled'] = $this->language->get('text_enabled');
-        $data['text_disabled'] = $this->language->get('text_disabled');
-        $data['text_all_zones'] = $this->language->get('text_all_zones');
-        $data['text_yes'] = $this->language->get('text_yes');
-        $data['text_no'] = $this->language->get('text_no');
-        $data['text_authorization'] = $this->language->get('text_authorization');
-        $data['text_sale'] = $this->language->get('text_sale');
+            'text_edit' => $this->language->get('text_edit'),
+            'text_enabled' => $this->language->get('text_enabled'),
+            'text_disabled' => $this->language->get('text_disabled'),
+            'text_yes' => $this->language->get('text_yes'),
+            'text_no' => $this->language->get('text_no'),
 
-        $data['entry_public_key'] = $this->language->get('entry_public_key');
-        $data['entry_private_key'] = $this->language->get('entry_private_key');
-        $data['entry_public_test_key'] = $this->language->get('entry_public_test_key');
-        $data['entry_private_test_key'] = $this->language->get('entry_private_test_key');
-        $data['entry_complete_status'] = $this->language->get('entry_complete_status');
-        $data['entry_under_review_status'] = $this->language->get('entry_under_review_status');
-        $data['entry_test'] = $this->language->get('entry_test');
+            'entry_public_key' => $this->language->get('entry_public_key'),
+            'entry_private_key' => $this->language->get('entry_private_key'),
+            'entry_public_test_key' => $this->language->get('entry_public_test_key'),
+            'entry_private_test_key' => $this->language->get('entry_private_test_key'),
+            'entry_secret_key' => $this->language->get('entry_secret_key'),
+            'entry_complete_status' => $this->language->get('entry_complete_status'),
+            'entry_under_review_status' => $this->language->get('entry_under_review_status'),
+            'entry_cancel_status' => $this->language->get('entry_cancel_status'),
+            'entry_test' => $this->language->get('entry_test'),
+            'entry_delivery' => $this->language->get('entry_delivery'),
 
-        $data['entry_transaction'] = $this->language->get('entry_transaction');
-        $data['entry_total'] = $this->language->get('entry_total');
-        $data['entry_order_status'] = $this->language->get('entry_order_status');
-        $data['entry_geo_zone'] = $this->language->get('entry_geo_zone');
-        $data['entry_status'] = $this->language->get('entry_status');
-        $data['entry_sort_order'] = $this->language->get('entry_sort_order');
-        $data['entry_active'] = $this->language->get('entry_active');
+            'entry_transaction' => $this->language->get('entry_transaction'),
+            'entry_total' => $this->language->get('entry_total'),
+            'entry_order_status' => $this->language->get('entry_order_status'),
+            'entry_geo_zone' => $this->language->get('entry_geo_zone'),
+            'entry_status' => $this->language->get('entry_status'),
+            'entry_sort_order' => $this->language->get('entry_sort_order'),
+            'entry_active' => $this->language->get('entry_active'),
 
-        $data['button_save'] = $this->language->get('button_save');
-        $data['button_cancel'] = $this->language->get('button_cancel');
+            'button_save' => $this->language->get('button_save'),
+            'button_cancel' => $this->language->get('button_cancel')
+        );
+    }
 
+    protected function prepareViewData()
+    {
         $data['statuses'] = $this->model_payment_brick->getAllStatuses();
         $data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
 
@@ -91,53 +117,59 @@ class ControllerPaymentBrick extends Controller
         $data['action'] = $this->url->link('payment/brick', 'token=' . $this->session->data['token'], 'SSL');
         $data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
 
-        $data['brick_public_key'] = $this->checkPostRequestIsset(
+        $data['brick_public_key'] = $this->getPostData(
             'brick_public_key',
             $this->config->get('brick_public_key'));
 
-        $data['brick_private_key'] = $this->checkPostRequestIsset(
+        $data['brick_private_key'] = $this->getPostData(
             'brick_private_key',
             $this->config->get('brick_private_key'));
 
-        $data['brick_public_test_key'] = $this->checkPostRequestIsset(
+        $data['brick_public_test_key'] = $this->getPostData(
             'brick_public_test_key',
             $this->config->get('brick_public_test_key'));
 
-        $data['brick_private_test_key'] = $this->checkPostRequestIsset(
+        $data['brick_private_test_key'] = $this->getPostData(
             'brick_private_test_key',
             $this->config->get('brick_private_test_key'));
 
-        $data['brick_complete_status'] = $this->checkPostRequestIsset(
+        $data['brick_secret_key'] = $this->getPostData(
+            'brick_secret_key',
+            $this->config->get('brick_secret_key'));
+
+        $data['brick_complete_status'] = $this->getPostData(
             'brick_complete_status',
             $this->config->get('brick_complete_status'));
 
-        $data['brick_under_review_status'] = $this->checkPostRequestIsset(
+        $data['brick_under_review_status'] = $this->getPostData(
             'brick_under_review_status',
             $this->config->get('brick_under_review_status'));
 
-        $data['brick_test_mode'] = $this->checkPostRequestIsset(
+        $data['brick_cancel_status'] = $this->getPostData(
+            'brick_cancel_status',
+            $this->config->get('brick_cancel_status'));
+
+        $data['brick_test_mode'] = $this->getPostData(
             'brick_test_mode',
             $this->config->get('brick_test_mode'));
 
-        $data['brick_status'] = $this->checkPostRequestIsset(
+        $data['brick_status'] = $this->getPostData(
             'brick_status',
             $this->config->get('brick_status'));
+
+        $data['brick_sort_order'] = $this->getPostData(
+            'brick_sort_order',
+            $this->config->get('brick_sort_order'));
+
+        $data['brick_delivery'] = $this->getPostData(
+            'brick_delivery',
+            $this->config->get('brick_delivery'));
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
 
-        $this->response->setOutput($this->load->view('payment/brick.tpl', $data));
-    }
-
-    /**
-     * @param $key
-     * @param $default
-     * @return mixed
-     */
-    private function checkPostRequestIsset($key, $default)
-    {
-        return isset($this->request->post[$key]) ? $this->request->post[$key] : $default;
+        return $data;
     }
 
     /**
