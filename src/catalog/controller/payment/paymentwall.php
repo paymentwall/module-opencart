@@ -29,6 +29,7 @@ class ControllerPaymentPaymentwall extends Controller
 
         if (!empty($orderInfo)) {
             $this->cart->clear();
+            unset($this->session->data['order_id']);
         } else {
             // Redirect to shopping cart
             $this->redirect($this->url->link('checkout/cart', '', 'SSL'));
