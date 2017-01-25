@@ -1,6 +1,6 @@
 <?php
 
-class ModelPaymentPaymentwall extends Model
+class ModelExtensionPaymentBrick extends Model
 {
     public function getAllStatuses()
     {

@@ -1,6 +1,6 @@
 <?php
 
-class ControllerPaymentPaymentwall extends Controller
+class ControllerExtensionPaymentPaymentwall extends Controller
 {
     private $error = array();
 
@@ -10,7 +10,7 @@ class ControllerPaymentPaymentwall extends Controller
         $this->load->model('setting/setting');
         $defaultConfigs = $this->model_setting_setting->getSetting('config');
         $this->model_setting_setting->editSetting('paymentwall', array(
-            'paymentwall_complete_status' => $defaultConfigs['config_complete_status_id'],
+            'paymentwall_complete_status' => @$defaultConfigs['config_complete_status_id'],
             'paymentwall_cancel_status' => 7,
             'paymentwall_test' => 0,
             'paymentwall_delivery' => 1,
@@ -31,22 +31,22 @@ class ControllerPaymentPaymentwall extends Controller
     public function index()
     {
         $this->load->model('setting/setting');
-        $this->load->model('payment/paymentwall');
-        $this->load->language('payment/paymentwall');
+        $this->load->model('extension/payment/paymentwall');
+        $this->load->language('extension/payment/paymentwall');
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
             $this->model_setting_setting->editSetting('paymentwall', $this->request->post);
 
             $this->session->data['success'] = $this->language->get('text_success');
 
-            $this->response->redirect($this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL'));
         }
 
         $translationData = $this->prepareTranslationData();
         $viewData = $this->prepareViewData();
         $data = array_merge($translationData, $viewData);
 
-        $this->response->setOutput($this->load->view('payment/paymentwall.tpl', $data));
+        $this->response->setOutput($this->load->view('extension/payment/paymentwall.tpl', $data));
     }
 
     /**
@@ -101,7 +101,7 @@ class ControllerPaymentPaymentwall extends Controller
 
         $data['heading_title'] = $this->language->get('heading_title');
 
-        $data['statuses'] = $this->model_payment_paymentwall->getAllStatuses();
+        $data['statuses'] = $this->model_extension_payment_paymentwall->getAllStatuses();
 
         $data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
         $data['error_key'] = isset($this->error['key']) ? $this->error['key'] : '';
@@ -116,18 +116,18 @@ class ControllerPaymentPaymentwall extends Controller
             ),
             array(
                 'text' => $this->language->get('text_payment'),
-                'href' => $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'),
+                'href' => $this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL'),
                 'separator' => ' :: '
             ),
             array(
                 'text' => $this->language->get('heading_title'),
-                'href' => $this->url->link('payment/paymentwall', 'token=' . $this->session->data['token'], 'SSL'),
+                'href' => $this->url->link('extension/payment/paymentwall', 'token=' . $this->session->data['token'], 'SSL'),
                 'separator' => ' :: '
             )
         );
 
-        $data['action'] = $this->url->link('payment/paymentwall', 'token=' . $this->session->data['token'], 'SSL');
-        $data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
+        $data['action'] = $this->url->link('extension/payment/paymentwall', 'token=' . $this->session->data['token'], 'SSL');
+        $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL');
 
         $data['paymentwall_key'] = $this->getPostData(
             'paymentwall_key',
@@ -182,7 +182,7 @@ class ControllerPaymentPaymentwall extends Controller
      */
     protected function validate()
     {
-        if (!$this->user->hasPermission('modify', 'payment/paymentwall')) {
+        if (!$this->user->hasPermission('modify', 'extension/payment/paymentwall')) {
             $this->error['warning'] = $this->language->get('error_permission');
         }
 

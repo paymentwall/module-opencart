@@ -1,11 +1,10 @@
 <?php
 
-class ControllerPaymentBrick extends Controller
+class ControllerExtensionPaymentBrick extends Controller
 {
     public function index()
     {
-        $this->language->load('payment/brick');
-        $this->load->model('payment/brick');
+        $this->language->load('extension/payment/brick');
 
         $this->getPaymentModel()->initConfig();
 
@@ -13,11 +12,12 @@ class ControllerPaymentBrick extends Controller
 
         $data['public_key'] = Paymentwall_Config::getInstance()->getPublicKey();
 
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/brick.tpl')) {
-            return $this->load->view($this->config->get('config_template') . '/template/payment/brick.tpl', $data);
+        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/brick.tpl')) {
+            return $this->load->view($this->config->get('config_template') . '/template/extension/payment/brick.tpl', $data);
         } else {
-            return $this->load->view('default/template/payment/brick.tpl', $data);
+            return $this->load->view('extension/payment/brick.tpl', $data);
         }
+        
     }
 
     protected function prepareTranslationData()
@@ -63,10 +63,10 @@ class ControllerPaymentBrick extends Controller
     public function validate()
     {
         $this->load->model('checkout/order');
-        $this->load->model('payment/brick');
         $this->load->model('account/activity');
         $this->load->model('setting/setting');
-        $this->language->load('payment/brick');
+        $this->load->model('extension/payment/brick');
+        $this->language->load('extension/payment/brick');
 
         $defaultConfigs = $this->model_setting_setting->getSetting('config');
         $data = array(
@@ -129,10 +129,10 @@ class ControllerPaymentBrick extends Controller
      */
     protected function getPaymentModel()
     {
-        if (!$this->model_payment_brick) {
-            $this->load->model('payment/brick');
+        if (!$this->model_extension_payment_brick) {
+            $this->load->model('extension/payment/brick');
         }
-        return $this->model_payment_brick;
+        return $this->model_extension_payment_brick;
     }
     /**
      * @return ModelCheckoutOrder

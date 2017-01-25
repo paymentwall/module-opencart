@@ -3,11 +3,11 @@
 if (!class_exists('Paymentwall_Config'))
     require_once DIR_SYSTEM . '/thirdparty/paymentwall-php/lib/paymentwall.php';
 
-class ModelPaymentPaymentwall extends Model
+class ModelExtensionPaymentPaymentwall extends Model
 {
     public function getMethod($address, $total)
     {
-        $this->load->language('payment/paymentwall');
+        $this->load->language('extension/payment/paymentwall');
         $method_data = array();
         if ($this->config->get('paymentwall_status') && $total > 0) {
             $method_data = array(
@@ -38,9 +38,8 @@ class ModelPaymentPaymentwall extends Model
         if ($this->config->get('paymentwall_delivery')) {
             // Delivery Confirmation
             $delivery = new Paymentwall_GenerericApiObject('delivery');
-            return $delivery->post($this->prepareDeliveryData($order, $ref));
+            $response = $delivery->post($this->prepareDeliveryData($order, $ref));
         }
-        return array();
     }
 
     /**
@@ -77,19 +76,17 @@ class ModelPaymentPaymentwall extends Model
     {
         // Init Paymentwall configs
         $this->initConfig();
-
         $successUrl = $successUrl
-                    ? $successUrl
-                    : $this->config->get('paymentwall_success_url');
+            ? $successUrl
+            : $this->config->get('paymentwall_success_url');
         $total = $orderInfo['currency_value'] > 0 ? $orderInfo['total'] * $orderInfo['currency_value'] : $orderInfo['total']; // when currency_value <= 0 changes to 1
-
         $widget = new Paymentwall_Widget(
             !empty($customer->getId()) ? $customer->getId() : $orderInfo['email'],
             $this->config->get('paymentwall_widget'),
             array(
                 new Paymentwall_Product(
                     $orderInfo['order_id'],
-                    $total, 
+                    $total,
                     $orderInfo['currency_code'],
                     'Order #' . $orderInfo['order_id']
                 )
@@ -102,14 +99,12 @@ class ModelPaymentPaymentwall extends Model
                 ),
                 $this->getUserProfileData($orderInfo)
             ));
-
         return $widget->getHtmlCode(array(
             'width' => '100%',
             'height' => 600,
             'frameborder' => 0
         ));
     }
-
     private function getUserProfileData($orderInfo)
     {
         return array(

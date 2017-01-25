@@ -1,6 +1,6 @@
 <?php
 
-class ControllerPaymentBrick extends Controller
+class ControllerExtensionPaymentBrick extends Controller
 {
     private $error = array();
 
@@ -11,7 +11,7 @@ class ControllerPaymentBrick extends Controller
         $this->model_setting_setting->editSetting('brick', array(
             'brick_under_review_status' => 1, // Pending
             'brick_cancel_status' => 7, // Cancel
-            'brick_complete_status' => $defaultConfigs['config_complete_status_id'],
+            'brick_complete_status' => @$defaultConfigs['config_complete_status_id'],
             'brick_test_mode' => 0,
             'brick_status' => 1, // Pending
             'brick_sort_order' => 1
@@ -29,20 +29,20 @@ class ControllerPaymentBrick extends Controller
     public function index()
     {
         $this->load->model('setting/setting');
-        $this->load->model('payment/brick');
-        $this->load->language('payment/brick');
+        $this->load->model('extension/payment/brick');
+        $this->load->language('extension/payment/brick');
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
             $this->model_setting_setting->editSetting('brick', $this->request->post);
             $this->session->data['success'] = $this->language->get('text_success');
-            $this->response->redirect($this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL'));
         }
 
         $translationData = $this->prepareTranslationData();
         $viewData = $this->prepareViewData();
         $data = array_merge($translationData, $viewData);
 
-        $this->response->setOutput($this->load->view('payment/brick.tpl', $data));
+        $this->response->setOutput($this->load->view('extension/payment/brick.tpl', $data));
     }
 
     /**
@@ -93,7 +93,7 @@ class ControllerPaymentBrick extends Controller
 
     protected function prepareViewData()
     {
-        $data['statuses'] = $this->model_payment_brick->getAllStatuses();
+        $data['statuses'] = $this->model_extension_payment_brick->getAllStatuses();
         $data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
 
         $data['breadcrumbs'] = array(
@@ -104,18 +104,18 @@ class ControllerPaymentBrick extends Controller
             ),
             array(
                 'text' => $this->language->get('text_payment'),
-                'href' => $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL'),
+                'href' => $this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL'),
                 'separator' => ' :: '
             ),
             array(
                 'text' => $this->language->get('heading_title'),
-                'href' => $this->url->link('payment/brick', 'token=' . $this->session->data['token'], 'SSL'),
+                'href' => $this->url->link('extension/payment/brick', 'token=' . $this->session->data['token'], 'SSL'),
                 'separator' => ' :: '
             )
         );
 
-        $data['action'] = $this->url->link('payment/brick', 'token=' . $this->session->data['token'], 'SSL');
-        $data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
+        $data['action'] = $this->url->link('extension/payment/brick', 'token=' . $this->session->data['token'], 'SSL');
+        $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL');
 
         $data['brick_public_key'] = $this->getPostData(
             'brick_public_key',
@@ -178,7 +178,7 @@ class ControllerPaymentBrick extends Controller
      */
     private function validate()
     {
-        if (!$this->user->hasPermission('modify', 'payment/brick')) {
+        if (!$this->user->hasPermission('modify', 'extension/payment/brick')) {
             $this->error['warning'] = $this->language->get('error_permission');
         }
 

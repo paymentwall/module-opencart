@@ -126,7 +126,7 @@
             },
             sendPaymentRequest: function () {
                 $.ajax({
-                    url: 'index.php?route=payment/brick/validate',
+                    url: 'index.php?route=extension/payment/brick/validate',
                     type: 'post',
                     data: $('#brick-creditcard-form').serialize(),
                     dataType: 'json',

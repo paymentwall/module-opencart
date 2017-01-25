@@ -1,17 +1,12 @@
 <?php
-if (!class_exists('Paymentwall_Config'))
+if (!class_exists('Paymentwall_Config')) {
     require_once DIR_SYSTEM . '/thirdparty/paymentwall-php/lib/paymentwall.php';
-
-class ModelPaymentBrick extends Model
+}
+class ModelExtensionPaymentBrick extends Model
 {
-    /**
-     * @param $address
-     * @param $total
-     * @return array
-     */
     public function getMethod($address, $total)
     {
-        $this->load->language('payment/brick');
+        $this->load->language('extension/payment/brick');
         $method_data = array();
         if ($this->config->get('brick_status') && $total > 0) {
             $method_data = array(
@@ -25,9 +20,6 @@ class ModelPaymentBrick extends Model
         return $method_data;
     }
 
-    /**
-     * @param bool $pingback
-     */
     public function initConfig($pingback = false)
     {
         if ($pingback) {
@@ -147,5 +139,4 @@ class ModelPaymentBrick extends Model
             'email' => $orderInfo['email'],
         );
     }
-
 }

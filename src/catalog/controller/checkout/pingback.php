@@ -93,8 +93,8 @@ class ControllerCheckoutPingback extends Controller
             die('Payment method is invalid!');
         }
 
-        $this->load->model('payment/' . $paymentCode);
-        $modelName = 'model_payment_' . $paymentCode;
+        $this->load->model('extension/payment/' . $paymentCode);
+        $modelName = 'model_extension_payment_' . $paymentCode;
         $this->paymentModel = $this->{$modelName};
 
         return $this->paymentModel;
