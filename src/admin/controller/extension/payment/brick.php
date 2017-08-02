@@ -8,19 +8,19 @@ class ControllerExtensionPaymentBrick extends Controller
     public function install() {
         $this->load->model('setting/setting');
         $defaultConfigs = $this->model_setting_setting->getSetting('config');
-        $this->model_setting_setting->editSetting('brick', array(
-            'brick_under_review_status' => 1, // Pending
-            'brick_cancel_status' => 7, // Cancel
-            'brick_complete_status' => @$defaultConfigs['config_complete_status_id'],
-            'brick_test_mode' => 0,
-            'brick_status' => 1, // Pending
-            'brick_sort_order' => 1
+        $this->model_setting_setting->editSetting('payment_brick', array(
+            'payment_brick_under_review_status' => 1, // Pending
+            'payment_brick_cancel_status' => 7, // Cancel
+            'payment_brick_complete_status' => @$defaultConfigs['config_complete_status_id'],
+            'payment_brick_test_mode' => 0,
+            'payment_brick_status' => 1, // Pending
+            'payment_brick_sort_order' => 1
         ));
     }
 
     public function uninstall(){
         $this->load->model('setting/setting');
-        $this->model_setting_setting->deleteSetting('brick');
+        $this->model_setting_setting->deleteSetting('payment_brick');
     }
 
     /**
@@ -33,16 +33,16 @@ class ControllerExtensionPaymentBrick extends Controller
         $this->load->language('extension/payment/brick');
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-            $this->model_setting_setting->editSetting('brick', $this->request->post);
+            $this->model_setting_setting->editSetting('payment_brick', $this->request->post);
             $this->session->data['success'] = $this->language->get('text_success');
-            $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', 'SSL'));
         }
 
         $translationData = $this->prepareTranslationData();
         $viewData = $this->prepareViewData();
         $data = array_merge($translationData, $viewData);
 
-        $this->response->setOutput($this->load->view('extension/payment/brick.tpl', $data));
+        $this->response->setOutput($this->load->view('extension/payment/brick', $data));
     }
 
     /**
@@ -99,71 +99,71 @@ class ControllerExtensionPaymentBrick extends Controller
         $data['breadcrumbs'] = array(
             array(
                 'text' => $this->language->get('text_home'),
-                'href' => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+                'href' => $this->url->link('common/home', 'user_token=' . $this->session->data['user_token'], 'SSL'),
                 'separator' => false
             ),
             array(
                 'text' => $this->language->get('text_payment'),
-                'href' => $this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL'),
+                'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', 'SSL'),
                 'separator' => ' :: '
             ),
             array(
                 'text' => $this->language->get('heading_title'),
-                'href' => $this->url->link('extension/payment/brick', 'token=' . $this->session->data['token'], 'SSL'),
+                'href' => $this->url->link('extension/payment/brick', 'user_token=' . $this->session->data['user_token'], 'SSL'),
                 'separator' => ' :: '
             )
         );
 
-        $data['action'] = $this->url->link('extension/payment/brick', 'token=' . $this->session->data['token'], 'SSL');
-        $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL');
+        $data['action'] = $this->url->link('extension/payment/brick', 'user_token=' . $this->session->data['user_token'], 'SSL');
+        $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', 'SSL');
 
-        $data['brick_public_key'] = $this->getPostData(
-            'brick_public_key',
-            $this->config->get('brick_public_key'));
+        $data['payment_brick_public_key'] = $this->getPostData(
+            'payment_brick_public_key',
+            $this->config->get('payment_brick_public_key'));
 
-        $data['brick_private_key'] = $this->getPostData(
-            'brick_private_key',
-            $this->config->get('brick_private_key'));
+        $data['payment_brick_private_key'] = $this->getPostData(
+            'payment_brick_private_key',
+            $this->config->get('payment_brick_private_key'));
 
-        $data['brick_public_test_key'] = $this->getPostData(
-            'brick_public_test_key',
-            $this->config->get('brick_public_test_key'));
+        $data['payment_brick_public_test_key'] = $this->getPostData(
+            'payment_brick_public_test_key',
+            $this->config->get('payment_brick_public_test_key'));
 
-        $data['brick_private_test_key'] = $this->getPostData(
-            'brick_private_test_key',
-            $this->config->get('brick_private_test_key'));
+        $data['payment_brick_private_test_key'] = $this->getPostData(
+            'payment_brick_private_test_key',
+            $this->config->get('payment_brick_private_test_key'));
 
-        $data['brick_secret_key'] = $this->getPostData(
-            'brick_secret_key',
-            $this->config->get('brick_secret_key'));
+        $data['payment_brick_secret_key'] = $this->getPostData(
+            'payment_brick_secret_key',
+            $this->config->get('payment_brick_secret_key'));
 
-        $data['brick_complete_status'] = $this->getPostData(
-            'brick_complete_status',
-            $this->config->get('brick_complete_status'));
+        $data['payment_brick_complete_status'] = $this->getPostData(
+            'payment_brick_complete_status',
+            $this->config->get('payment_brick_complete_status'));
 
-        $data['brick_under_review_status'] = $this->getPostData(
-            'brick_under_review_status',
-            $this->config->get('brick_under_review_status'));
+        $data['payment_brick_under_review_status'] = $this->getPostData(
+            'payment_brick_under_review_status',
+            $this->config->get('payment_brick_under_review_status'));
 
-        $data['brick_cancel_status'] = $this->getPostData(
-            'brick_cancel_status',
-            $this->config->get('brick_cancel_status'));
+        $data['payment_brick_cancel_status'] = $this->getPostData(
+            'payment_brick_cancel_status',
+            $this->config->get('payment_brick_cancel_status'));
 
-        $data['brick_test_mode'] = $this->getPostData(
-            'brick_test_mode',
-            $this->config->get('brick_test_mode'));
+        $data['payment_brick_test_mode'] = $this->getPostData(
+            'payment_brick_test_mode',
+            $this->config->get('payment_brick_test_mode'));
 
-        $data['brick_status'] = $this->getPostData(
-            'brick_status',
-            $this->config->get('brick_status'));
+        $data['payment_brick_status'] = $this->getPostData(
+            'payment_brick_status',
+            $this->config->get('payment_brick_status'));
 
-        $data['brick_sort_order'] = $this->getPostData(
-            'brick_sort_order',
-            $this->config->get('brick_sort_order'));
+        $data['payment_brick_sort_order'] = $this->getPostData(
+            'payment_brick_sort_order',
+            $this->config->get('payment_brick_sort_order'));
 
-        $data['brick_delivery'] = $this->getPostData(
-            'brick_delivery',
-            $this->config->get('brick_delivery'));
+        $data['payment_brick_delivery'] = $this->getPostData(
+            'payment_brick_delivery',
+            $this->config->get('payment_brick_delivery'));
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');

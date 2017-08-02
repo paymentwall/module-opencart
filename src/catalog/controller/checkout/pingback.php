@@ -20,9 +20,8 @@ class ControllerCheckoutPingback extends Controller
         // Init payment configs for pingback handle
         $this->loadPaymentModel($order['payment_code']);
         $this->getPaymentModel()->initConfig(true);
-
+        
         $pingback = new Paymentwall_Pingback($this->request->get, $this->getRealIpAddress($this->request->server));
-
         // Confirm order if status is null
         if (!$order['order_status']) {
             $this->getCheckoutOrderModel()->addOrderHistory($order['order_id'], $defaultConfigs['config_order_status_id'], '', true);
@@ -31,16 +30,16 @@ class ControllerCheckoutPingback extends Controller
         if ($pingback->validate()) {
             if ($pingback->isDeliverable()) {
                 $this->getPaymentModel()->callDeliveryApi($order, $pingback->getReferenceId());
-                if ($order['order_status_id'] != $this->config->get($order['payment_code'] . '_complete_status')) {
-                    $this->getCheckoutOrderModel()->addOrderHistory($pingback->getProduct()->getId(), $this->config->get($order['payment_code'] .'_complete_status'), 'Order approved!, Transaction Id: #' . $pingback->getReferenceId(), true);
+                if ($order['order_status_id'] != $this->config->get('payment_' . $order['payment_code'] . '_complete_status')) {
+                    $this->getCheckoutOrderModel()->addOrderHistory($pingback->getProduct()->getId(), $this->config->get('payment_' . $order['payment_code'] .'_complete_status'), 'Order approved!, Transaction Id: #' . $pingback->getReferenceId(), true);
                 }
             } elseif ($pingback->isCancelable()) {
-                if ($order['order_status_id'] != $this->config->get($order['payment_code'] . '_cancel_status')) {
-                    $this->getCheckoutOrderModel()->addOrderHistory($pingback->getProduct()->getId(), $this->config->get($order['payment_code'] .'_cancel_status'), 'Order canceled!', true);
+                if ($order['order_status_id'] != $this->config->get('payment_' . $order['payment_code'] . '_cancel_status')) {
+                    $this->getCheckoutOrderModel()->addOrderHistory($pingback->getProduct()->getId(), $this->config->get('payment_' . $order['payment_code'] .'_cancel_status'), 'Order canceled!', true);
                 }
             } elseif ($pingback->isUnderReview()) {
-                if ($order['order_status_id'] != $this->config->get($order['payment_code'] . '_under_review_status')) {
-                    $this->getCheckoutOrderModel()->addOrderHistory($pingback->getProduct()->getId(), $this->config->get($order['payment_code'] .'_under_review_status'), 'The order is under review !', true);
+                if ($order['order_status_id'] != $this->config->get('payment_' . $order['payment_code'] . '_under_review_status')) {
+                    $this->getCheckoutOrderModel()->addOrderHistory($pingback->getProduct()->getId(), $this->config->get('payment_' . $order['payment_code'] .'_under_review_status'), 'The order is under review !', true);
                 }
             }
 

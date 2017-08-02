@@ -9,20 +9,20 @@ class ControllerExtensionPaymentPaymentwall extends Controller
     {
         $this->load->model('setting/setting');
         $defaultConfigs = $this->model_setting_setting->getSetting('config');
-        $this->model_setting_setting->editSetting('paymentwall', array(
-            'paymentwall_complete_status' => @$defaultConfigs['config_complete_status_id'],
-            'paymentwall_cancel_status' => 7,
-            'paymentwall_test' => 0,
-            'paymentwall_delivery' => 1,
-            'paymentwall_status' => 1,
-            'paymentwall_sort_order' => 1,
+        $this->model_setting_setting->editSetting('payment_paymentwall', array(
+            'payment_paymentwall_complete_status' => @$defaultConfigs['config_complete_status_id'],
+            'payment_paymentwall_cancel_status' => 7,
+            'payment_paymentwall_test' => 0,
+            'payment_paymentwall_delivery' => 1,
+            'payment_paymentwall_status' => 1, //Pending
+            'payment_paymentwall_sort_order' => 1,
         ));
     }
 
     public function uninstall()
     {
         $this->load->model('setting/setting');
-        $this->model_setting_setting->deleteSetting('paymentwall');
+        $this->model_setting_setting->deleteSetting('payment_paymentwall');
     }
 
     /**
@@ -35,18 +35,18 @@ class ControllerExtensionPaymentPaymentwall extends Controller
         $this->load->language('extension/payment/paymentwall');
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-            $this->model_setting_setting->editSetting('paymentwall', $this->request->post);
+            $this->model_setting_setting->editSetting('payment_paymentwall', $this->request->post);
 
             $this->session->data['success'] = $this->language->get('text_success');
 
-            $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', 'SSL'));
         }
-
+        
         $translationData = $this->prepareTranslationData();
         $viewData = $this->prepareViewData();
         $data = array_merge($translationData, $viewData);
-
-        $this->response->setOutput($this->load->view('extension/payment/paymentwall.tpl', $data));
+        $this->response->setOutput($this->load->view('extension/payment/paymentwall', $data));
+        
     }
 
     /**
@@ -107,67 +107,67 @@ class ControllerExtensionPaymentPaymentwall extends Controller
         $data['error_key'] = isset($this->error['key']) ? $this->error['key'] : '';
         $data['error_secret'] = isset($this->error['secret']) ? $this->error['secret'] : '';
         $data['error_widget'] = isset($this->error['widget']) ? $this->error['widget'] : '';
-
+       
         $data['breadcrumbs'] = array(
             array(
                 'text' => $this->language->get('text_home'),
-                'href' => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+                'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], 'SSL'),
                 'separator' => false
             ),
             array(
                 'text' => $this->language->get('text_payment'),
-                'href' => $this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL'),
+                'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', 'SSL'),
                 'separator' => ' :: '
             ),
             array(
                 'text' => $this->language->get('heading_title'),
-                'href' => $this->url->link('extension/payment/paymentwall', 'token=' . $this->session->data['token'], 'SSL'),
+                'href' => $this->url->link('extension/payment/paymentwall', 'user_token=' . $this->session->data['user_token'], 'SSL'),
                 'separator' => ' :: '
             )
         );
 
-        $data['action'] = $this->url->link('extension/payment/paymentwall', 'token=' . $this->session->data['token'], 'SSL');
-        $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'], 'SSL');
+        $data['action'] = $this->url->link('extension/payment/paymentwall', 'user_token=' . $this->session->data['user_token'], 'SSL');
+        $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', 'SSL');
 
-        $data['paymentwall_key'] = $this->getPostData(
-            'paymentwall_key',
-            $this->config->get('paymentwall_key'));
+        $data['payment_paymentwall_key'] = $this->getPostData(
+            'payment_paymentwall_key',
+            $this->config->get('payment_paymentwall_key'));
 
-        $data['paymentwall_secret'] = $this->getPostData(
-            'paymentwall_secret',
-            $this->config->get('paymentwall_secret'));
+        $data['payment_paymentwall_secret'] = $this->getPostData(
+            'payment_paymentwall_secret',
+            $this->config->get('payment_paymentwall_secret'));
 
-        $data['paymentwall_widget'] = $this->getPostData(
-            'paymentwall_widget',
-            $this->config->get('paymentwall_widget'));
+        $data['payment_paymentwall_widget'] = $this->getPostData(
+            'payment_paymentwall_widget',
+            $this->config->get('payment_paymentwall_widget'));
 
-        $data['paymentwall_complete_status'] = $this->getPostData(
-            'paymentwall_complete_status',
-            $this->config->get('paymentwall_complete_status'));
+        $data['payment_paymentwall_complete_status'] = $this->getPostData(
+            'payment_paymentwall_complete_status',
+            $this->config->get('payment_paymentwall_complete_status'));
 
-        $data['paymentwall_cancel_status'] = $this->getPostData(
-            'paymentwall_cancel_status',
-            $this->config->get('paymentwall_cancel_status'));
+        $data['payment_paymentwall_cancel_status'] = $this->getPostData(
+            'payment_paymentwall_cancel_status',
+            $this->config->get('payment_paymentwall_cancel_status'));
 
-        $data['paymentwall_delivery'] = $this->getPostData(
-            'paymentwall_delivery',
-            $this->config->get('paymentwall_delivery'));
+        $data['payment_paymentwall_delivery'] = $this->getPostData(
+            'payment_paymentwall_delivery',
+            $this->config->get('payment_paymentwall_delivery'));
 
-        $data['paymentwall_success_url'] = $this->getPostData(
-            'paymentwall_success_url',
-            $this->config->get('paymentwall_success_url'));
+        $data['payment_paymentwall_success_url'] = $this->getPostData(
+            'payment_paymentwall_success_url',
+            $this->config->get('payment_paymentwall_success_url'));
 
-        $data['paymentwall_test'] = $this->getPostData(
-            'paymentwall_test',
-            $this->config->get('paymentwall_test'));
+        $data['payment_paymentwall_test'] = $this->getPostData(
+            'payment_paymentwall_test',
+            $this->config->get('payment_paymentwall_test'));
 
-        $data['paymentwall_status'] = $this->getPostData(
-            'paymentwall_status',
-            $this->config->get('paymentwall_status'));
+        $data['payment_paymentwall_status'] = $this->getPostData(
+            'payment_paymentwall_status',
+            $this->config->get('payment_paymentwall_status'));
 
-        $data['paymentwall_sort_order'] = $this->getPostData(
-            'paymentwall_sort_order',
-            $this->config->get('paymentwall_sort_order'));
+        $data['payment_paymentwall_sort_order'] = $this->getPostData(
+            'payment_paymentwall_sort_order',
+            $this->config->get('payment_paymentwall_sort_order'));
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
@@ -186,15 +186,15 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             $this->error['warning'] = $this->language->get('error_permission');
         }
 
-        if (!$this->request->post['paymentwall_key']) {
+        if (!$this->request->post['payment_paymentwall_key']) {
             $this->error['key'] = $this->language->get('error_key');
         }
 
-        if (!$this->request->post['paymentwall_secret']) {
+        if (!$this->request->post['payment_paymentwall_secret']) {
             $this->error['secret'] = $this->language->get('error_secret');
         }
 
-        if (!$this->request->post['paymentwall_widget']) {
+        if (!$this->request->post['payment_paymentwall_widget']) {
             $this->error['widget'] = $this->language->get('error_widget');
         }
 
