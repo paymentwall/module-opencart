@@ -8,11 +8,11 @@ class ModelExtensionPaymentBrick extends Model
     {
         $this->load->language('extension/payment/brick');
         $method_data = array();
-        if ($this->config->get('brick_status') && $total > 0) {
+        if ($this->config->get('payment_brick_status') && $total > 0) {
             $method_data = array(
                 'code' => 'brick',
                 'title' => $this->language->get('text_title'),
-                'sort_order' => $this->config->get('brick_sort_order'),
+                'sort_order' => $this->config->get('payment_brick_sort_order'),
                 'terms' => ''
             );
         }
@@ -25,17 +25,17 @@ class ModelExtensionPaymentBrick extends Model
         if ($pingback) {
             Paymentwall_Config::getInstance()->set(array(
                 'api_type' => Paymentwall_Config::API_GOODS,
-                'private_key' => $this->config->get('brick_secret_key')
+                'private_key' => $this->config->get('payment_brick_private_test_key')
             ));
         } else {
             Paymentwall_Config::getInstance()->set(array(
                 'api_type' => Paymentwall_Config::API_GOODS,
-                'public_key' => $this->config->get('brick_test_mode')
-                    ? $this->config->get('brick_public_test_key')
-                    : $this->config->get('brick_public_key'),
-                'private_key' => $this->config->get('brick_test_mode')
-                    ? $this->config->get('brick_private_test_key')
-                    : $this->config->get('brick_private_key')
+                'public_key' => $this->config->get('payment_brick_test_mode')
+                    ? $this->config->get('payment_brick_public_test_key')
+                    : $this->config->get('payment_brick_public_key'),
+                'private_key' => $this->config->get('payment_brick_test_mode')
+                    ? $this->config->get('payment_brick_private_test_key')
+                    : $this->config->get('payment_brick_private_key')
             ));
         }
     }
@@ -61,7 +61,7 @@ class ModelExtensionPaymentBrick extends Model
      */
     public function callDeliveryApi($order, $refId)
     {
-        if ($this->config->get('brick_delivery')) {
+        if ($this->config->get('payment_brick_delivery')) {
             // Delivery Confirmation
             $delivery = new Paymentwall_GenerericApiObject('delivery');
             return $delivery->post($this->prepareDeliveryData($order, $refId));
@@ -116,7 +116,7 @@ class ModelExtensionPaymentBrick extends Model
             'shipping_address[zip]' => $order['shipping_postcode'],
             'shipping_address[city]' => $order['shipping_city'],
             'reason' => 'none',
-            'is_test' => $this->config->get('paymentwall_test') ? 1 : 0,
+            'is_test' => $this->config->get('payment_brick_test_mode') ? 1 : 0,
         );
     }
 

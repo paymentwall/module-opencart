@@ -11,11 +11,11 @@ class ControllerExtensionPaymentBrick extends Controller
         $data = $this->prepareTranslationData();
 
         $data['public_key'] = Paymentwall_Config::getInstance()->getPublicKey();
-
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/brick.tpl')) {
-            return $this->load->view($this->config->get('config_template') . '/template/extension/payment/brick.tpl', $data);
+        
+        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/brick')) {
+            return $this->load->view($this->config->get('config_template') . '/template/extension/payment/brick', $data);
         } else {
-            return $this->load->view('extension/payment/brick.tpl', $data);
+            return $this->load->view('extension/payment/brick', $data);
         }
         
     }
