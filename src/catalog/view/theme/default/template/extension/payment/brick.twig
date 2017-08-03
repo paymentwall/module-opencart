@@ -1,50 +1,50 @@
 <div id="brick-errors" style="display: none;"></div>
 <form class="form-horizontal" id="brick-creditcard-form" method="post">
     <fieldset id="payment">
-        <legend><?php echo $text_credit_card; ?></legend>
+        <legend>{{ text_credit_card }}</legend>
         <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-cc-number"><?php echo $entry_cc_number; ?></label>
+            <label class="col-sm-2 control-label" for="input-cc-number">{{ entry_cc_number }}</label>
 
             <div class="col-sm-6">
-                <input type="text" name="cc_number" value="" placeholder="<?php echo $entry_cc_number; ?>"
+                <input type="text" name="cc_number" value="" placeholder="{{ entry_cc_number }}"
                        id="input-cc-number" class="form-control" data-brick="card-number" size="24"/>
             </div>
         </div>
 
         <div class="form-group required">
             <label class="col-sm-2 control-label"
-                   for="input-cc-expire-date"><?php echo $entry_cc_expire_date; ?></label>
+                   for="input-cc-expire-date"> {{ entry_cc_expire_date }}</label>
 
             <div class="col-sm-3">
                 <select name="cc_expire_date_month" id="input-cc-expire-month" class="form-control"
                         data-brick="card-expiration-month">
-                    <?php foreach ($months as $month) { ?>
-                    <option value="<?php echo $month['value']; ?>"><?php echo $month['text']; ?></option>
-                    <?php } ?>
+                    {% for month in months %}
+                    <option value=" {{ month.value }}">{{ month.text }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="col-sm-3">
                 <select name="cc_expire_date_year" id="input-cc-expire-year" class="form-control"
                         data-brick="card-expiration-year">
-                    <?php foreach ($year_expire as $year) { ?>
-                    <option value="<?php echo $year['value']; ?>"><?php echo $year['text']; ?></option>
-                    <?php } ?>
+                    {% for year in year_expire %}
+                    <option value="{{ year.value }}">{{ year.text }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>
 
         <div class="form-group required">
-            <label class="col-sm-2 control-label" for="input-cc-cvv2"><?php echo $entry_cc_cvv2; ?></label>
+            <label class="col-sm-2 control-label" for="input-cc-cvv2">{{ entry_cc_cvv2 }}</label>
 
             <div class="col-sm-6">
-                <input type="text" name="cc_cvv2" value="" placeholder="<?php echo $entry_cc_cvv2; ?>"
+                <input type="text" name="cc_cvv2" value="" placeholder="{{ entry_cc_cvv2 }}"
                        id="input-cc-cvv2" class="form-control" data-brick="card-cvv"/>
             </div>
         </div>
         <div class="buttons">
             <div class="pull-right">
-                <input type="submit" value="<?php echo $button_confirm; ?>" id="button-confirm"
-                       data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"/>
+                <input type="submit" value="{{ button_confirm }}" id="button-confirm"
+                       data-loading-text="{{ text_loading }}" class="btn btn-primary"/>
             </div>
         </div>
     </fieldset>
@@ -64,11 +64,11 @@
                 $('#brick-errors').html('');
                 var tplError = $('#brick-error-template').html();
                 if (typeof error == "string") {
-                    $('#brick-errors').append(tplError.replace('{{#content#}}', error));
+                    $('#brick-errors').append(tplError.replace('<p></p>', error));
                 }
                 if (typeof error == 'object') {
                     for (it in error) {
-                        $('#brick-errors').append(tplError.replace('{{#content#}}', error[it]));
+                        $('#brick-errors').append(tplError.replace('<p></p>', error[it]));
                     }
                 }
                 $('#brick-errors').show();
@@ -86,7 +86,7 @@
                 OCBrick.data = data.secure;
                 var msgContainer = $('<div class="attention alert alert-info"/>');
                 var clickHere = $('<a href="javascript:void(0);"/>');
-                clickHere.click(OCBrick.openVerify3DSPopup).html('<?php echo $text_click_here ?>');
+                clickHere.click(OCBrick.openVerify3DSPopup).html(' {{ text_click_here }}');
                 msgContainer.append(data.message + '&nbsp;')
                     .append(clickHere)
                     .insertBefore('#payment');
@@ -104,9 +104,9 @@
             },
             openVerify3DSPopup: function (e) {
                 var win = window.open("", "Brick: Verify 3D secure", "toolbar=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, width=1024, height=720");
-                var popup = win.document.body;
-                $(popup).append(OCBrick.data);
+                win.document.body.innerHTML += OCBrick.data;
                 win.document.forms[0].submit();
+                
                 return false;
             },
             showAttentionMessage: function (message) {
@@ -134,7 +134,7 @@
                         $('#button-confirm').attr('disabled', true);
                         $('#brick-creditcard-form .alert-info').remove();
                         $('#brick-errors').hide();
-                        OCBrick.showAttentionMessage('<?php echo $text_wait; ?>');
+                        OCBrick.showAttentionMessage('{{ text_wait }}');
                     },
                     complete: function () {
                         $('#button-confirm').attr('disabled', false);
@@ -155,9 +155,10 @@
         };
         $.getScript("https://api.paymentwall.com/brick/brick.1.4.js", function (data, textStatus, jqxhr) {
             var brick = new Brick({
-                public_key: '<?php echo $public_key; ?>',
+                public_key: '{{ public_key }}',
                 form: {formatter: true}
             }, 'custom');
+            
             $('#brick-creditcard-form').unbind('submit.brickForm').on('submit.brickForm', function (e) {
                 e.preventDefault();
                 // Stop event click submit
@@ -179,7 +180,7 @@
     <div class="alert alert-danger">
         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
         <span class="sr-only">Error:</span>
-        {{#content#}}
+        <p></p>
         <button type="button" class="close" data-dismiss="alert">×</button>
     </div>
 </div>
