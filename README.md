@@ -4,7 +4,7 @@ Paymentwall module for Opencart (v2.x) is a payment service for processing payme
 
 
 ### Requirement
-* **Opencart v2.x**
+* **Opencart v3.x**
 * PHP 5.2.16 or later
 
 #Installation

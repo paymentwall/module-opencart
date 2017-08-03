@@ -9,15 +9,15 @@ class ModelExtensionPaymentPaymentwall extends Model
     {
         $this->load->language('extension/payment/paymentwall');
         $method_data = array();
-        if ($this->config->get('paymentwall_status') && $total > 0) {
+        if ($this->config->get('payment_paymentwall_status') && $total > 0) {
             $method_data = array(
                 'code' => 'paymentwall',
                 'title' => $this->language->get('text_title'),
-                'sort_order' => $this->config->get('paymentwall_sort_order'),
+                'sort_order' => $this->config->get('payment_paymentwall_sort_order'),
                 'terms' => ''
             );
         }
-
+        
         return $method_data;
     }
 
@@ -25,8 +25,8 @@ class ModelExtensionPaymentPaymentwall extends Model
     {
         Paymentwall_Config::getInstance()->set(array(
             'api_type' => Paymentwall_Config::API_GOODS,
-            'public_key' => $this->config->get('paymentwall_key'),
-            'private_key' => $this->config->get('paymentwall_secret')
+            'public_key' => $this->config->get('payment_paymentwall_key'),
+            'private_key' => $this->config->get('payment_paymentwall_secret')
         ));
     }
 
@@ -35,7 +35,7 @@ class ModelExtensionPaymentPaymentwall extends Model
      */
     public function callDeliveryApi($order, $ref)
     {
-        if ($this->config->get('paymentwall_delivery')) {
+        if ($this->config->get('payment_paymentwall_delivery')) {
             // Delivery Confirmation
             $delivery = new Paymentwall_GenerericApiObject('delivery');
             $response = $delivery->post($this->prepareDeliveryData($order, $ref));
@@ -68,7 +68,7 @@ class ModelExtensionPaymentPaymentwall extends Model
             'shipping_address[zip]' => $order['shipping_postcode'],
             'shipping_address[city]' => $order['shipping_city'],
             'reason' => 'none',
-            'is_test' => $this->config->get('paymentwall_test') ? 1 : 0,
+            'is_test' => $this->config->get('payment_paymentwall_test') ? 1 : 0,
         );
     }
 
@@ -78,11 +78,11 @@ class ModelExtensionPaymentPaymentwall extends Model
         $this->initConfig();
         $successUrl = $successUrl
             ? $successUrl
-            : $this->config->get('paymentwall_success_url');
+            : $this->config->get('payment_paymentwall_success_url');
         $total = $orderInfo['currency_value'] > 0 ? $orderInfo['total'] * $orderInfo['currency_value'] : $orderInfo['total']; // when currency_value <= 0 changes to 1
         $widget = new Paymentwall_Widget(
             !empty($customer->getId()) ? $customer->getId() : $orderInfo['email'],
-            $this->config->get('paymentwall_widget'),
+            $this->config->get('payment_paymentwall_widget'),
             array(
                 new Paymentwall_Product(
                     $orderInfo['order_id'],
@@ -95,10 +95,12 @@ class ModelExtensionPaymentPaymentwall extends Model
                 array(
                     'success_url' => $successUrl,
                     'integration_module' => 'opencart',
-                    'test_mode' => $this->config->get('paymentwall_test')
+                    'test_mode' => $this->config->get('payment_paymentwall_test')
                 ),
                 $this->getUserProfileData($orderInfo)
             ));
+        
+        
         return $widget->getHtmlCode(array(
             'width' => '100%',
             'height' => 600,
