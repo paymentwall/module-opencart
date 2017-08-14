@@ -7,7 +7,7 @@ Paymentwall module for Opencart (v1.5.x) is a payment service for processing pay
 * PHP 5.2.16 or later
 
 #Installation
-To install Paymentwall Opencart module, please follow the [instructions](https://www.paymentwall.com/en/documentation/OpenCart/829).
+To install Paymentwall Opencart module, please follow the [instructions](https://docs.paymentwall.com/modules/opencart).
 
 After cloning the repository don't forget to install Paymentwall PHP API library (**required**):
 `git submodule init` and then `git submodule update`
