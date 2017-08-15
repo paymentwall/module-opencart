@@ -26,6 +26,7 @@ class ControllerPaymentPaymentwall extends Controller
 
         $orderId = @$this->session->data['order_id'];
         $orderInfo = $this->getCheckoutOrderModel()->getOrder($orderId);
+        $products = $this->cart->getProducts();
 
         if (!empty($orderInfo)) {
             $this->cart->clear();
@@ -33,6 +34,14 @@ class ControllerPaymentPaymentwall extends Controller
         } else {
             // Redirect to shopping cart
             $this->redirect($this->url->link('checkout/cart', '', 'SSL'));
+        }
+
+        $cartProducts = reset($products);
+
+        if (!empty($cartProducts['recurring'])) {
+            $this->load->model('checkout/recurring');
+            $profileDesciption = $this->getProfileDescription($cartProducts);
+            $this->model_checkout_recurring->create($cartProducts, $orderInfo['order_id'], $profileDesciption);
         }
 
         $this->document->setTitle($this->language->get('widget_title'));
@@ -55,7 +64,8 @@ class ControllerPaymentPaymentwall extends Controller
         $this->data['iframe'] = $this->getPaymentModel()->generateWidget(
             $orderInfo,
             $this->customer,
-            $this->url->link('checkout/success', '', 'SSL')
+            $this->url->link('checkout/success', '', 'SSL'),
+            $cartProducts
         );
 
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/paymentwall_widget.tpl')) {
@@ -77,9 +87,42 @@ class ControllerPaymentPaymentwall extends Controller
     }
 
     /**
+     * @return Profile description
+     */
+    protected function getProfileDescription($product)
+    {
+        $this->language->load('checkout/cart');
+        $profile_description = '';
+
+        $frequencies = array(
+            'day' => $this->language->get('text_day'),
+            'week' => $this->language->get('text_week'),
+            'semi_month' => $this->language->get('text_semi_month'),
+            'month' => $this->language->get('text_month'),
+            'year' => $this->language->get('text_year'),
+        );
+
+        if ($product['recurring_trial']) {
+                $recurring_price = $this->currency->format($this->tax->calculate($product['recurring_trial_price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')));
+            $profile_description = sprintf($this->language->get('text_trial_description'), $recurring_price, $product['recurring_trial_cycle'], $frequencies[$product['recurring_trial_frequency']], $product['recurring_trial_duration']) . ' ';
+        }
+
+        $recurring_price = $this->currency->format($this->tax->calculate($product['recurring_price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')));
+
+        if ($product['recurring_duration']) {
+            $profile_description .= sprintf($this->language->get('text_payment_description'), $recurring_price, $product['recurring_cycle'], $frequencies[$product['recurring_frequency']], $product['recurring_duration']);
+        } else {
+            $profile_description .= sprintf($this->language->get('text_payment_until_canceled_description'), $recurring_price, $product['recurring_cycle'], $frequencies[$product['recurring_frequency']], $product['recurring_duration']);
+        }
+
+        return $profile_description;
+    }
+
+    /**
      * @return ModelPaymentPaymentwall
      */
-    protected function getPaymentModel(){
+    protected function getPaymentModel()
+    {
         if(!$this->model_payment_paymentwall){
             $this->load->model('payment/paymentwall');
         }

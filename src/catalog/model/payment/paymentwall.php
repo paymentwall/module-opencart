@@ -85,31 +85,27 @@ class ModelPaymentPaymentwall extends Model
      * @param $successUrl
      * @return string
      */
-    public function generateWidget($orderInfo, $customer, $successUrl)
+    public function generateWidget($orderInfo, $customer, $successUrl, $cartProducts)
     {
         $successUrl = $this->config->get('paymentwall_success_url')
             ? $this->config->get('paymentwall_success_url')
             : $successUrl;
 
+        $this->load->model('catalog/product');
+
         $widget = new Paymentwall_Widget(
             $customer->getId() ? $customer->getId() : $orderInfo['email'],
             $this->config->get('paymentwall_widget'),
             array(
-                new Paymentwall_Product(
-                    $orderInfo['order_id'],
-                    $orderInfo['currency_value'] > 0
-                        ? ($orderInfo['total'] * $orderInfo['currency_value'])
-                        : $orderInfo['total'], // when currency_value <= 0 changes to 1
-                    $orderInfo['currency_code'],
-                    'Order #' . $orderInfo['order_id']
-                )
+                $this->getProduct($orderInfo, $cartProducts, $hasTrial)
             ),
             array_merge(
                 array(
                     'success_url' => $successUrl,
                     'email' => $orderInfo['email'],
                     'integration_module' => 'opencart',
-                    'test_mode' => $this->config->get('paymentwall_test')
+                    'test_mode' => $this->config->get('paymentwall_test'),
+                    'hide_post_trial_good' => $hasTrial ? 1 : 0,
                 ),
                 $this->getUserProfileData($orderInfo)
             ));
@@ -119,6 +115,83 @@ class ModelPaymentPaymentwall extends Model
             'height' => 600,
             'frameborder' => 0
         ));
+    }
+
+    public function getProduct($orderInfo, $cartProducts, &$hasTrial)
+    {
+        $price = $orderInfo['currency_value'] > 0
+            ? ($orderInfo['total'] * $orderInfo['currency_value'])
+            : $orderInfo['total'];
+        $periodType = null;
+        $recurringDuration = null;
+        $trialProduct = null;
+        $typeProduct = Paymentwall_Product::TYPE_SUBSCRIPTION;
+        $hasTrial = false;
+
+        if (count($cartProducts['quantity']) > 1) {
+            $typeProduct = Paymentwall_Product::TYPE_FIXED;
+        }
+
+        if ($typeProduct == Paymentwall_Product::TYPE_SUBSCRIPTION) {
+            $subScriptionProduct = $cartProducts;
+            $recurringDuration = $subScriptionProduct['recurring_duration'];
+            $periodType = $this->getPeriodType($subScriptionProduct['recurring_frequency'], $recurringDuration);
+
+            if ($subScriptionProduct['recurring_trial']) {
+                $hasTrial = true;
+                $recurringTrialDuration = $subScriptionProduct['recurring_trial_duration'];
+                $periodTrialType = $this->getPeriodType($subScriptionProduct['recurring_trial_frequency'], $recurringTrialDuration);
+
+                $trialProduct = new Paymentwall_Product(
+                    $orderInfo['order_id'],
+                    $price,
+                    $orderInfo['currency_code'],
+                    $subScriptionProduct['name'],
+                    $typeProduct,
+                    $recurringTrialDuration,
+                    $periodTrialType,
+                    true
+                );
+            }
+        }
+
+        return new Paymentwall_Product(
+            $orderInfo['order_id'],
+            $price,
+            $orderInfo['currency_code'],
+            'Order #' . $orderInfo['order_id'],
+            $typeProduct,
+            $recurringDuration,
+            $periodType,
+            ($typeProduct == Paymentwall_Product::TYPE_SUBSCRIPTION) ? true : false,
+            $trialProduct
+        );
+    }
+
+    protected function getPeriodType($recurringFrequency, &$recurringDuration)
+    {
+        switch ($recurringFrequency) {
+            case 'day':
+                $periodType = Paymentwall_Product::PERIOD_TYPE_DAY;
+                break;
+            case 'week':
+                $periodType = Paymentwall_Product::PERIOD_TYPE_WEEK;
+                break;
+            case 'semi_month':
+                $periodType = Paymentwall_Product::PERIOD_TYPE_WEEK;
+                $recurringDuration = $recurringDuration * 2; //2 weeks
+                break;
+            case 'month':
+                $periodType = Paymentwall_Product::PERIOD_TYPE_MONTH;
+                break;
+            case 'year':
+                $periodType = Paymentwall_Product::PERIOD_TYPE_YEAR;
+                break;
+            default:
+                break;
+        }
+
+        return $periodType;
     }
 
     /**
@@ -138,5 +211,14 @@ class ModelPaymentPaymentwall extends Model
             'customer[lastname]' => $orderInfo['payment_lastname'],
             'email' => $orderInfo['email'],
         );
+    }
+
+    public function recurringPayments() 
+    {
+        /*
+         * Used by the checkout to state the module
+         * supports recurring profiles.
+         */
+        return true;
     }
 }
