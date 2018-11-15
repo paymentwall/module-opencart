@@ -21,7 +21,7 @@ class ControllerCheckoutPingback extends Controller
             die('Order invalid!');
         }
 
-        if ($pingback->validate()) {
+        if ($pingback->validate(true)) {
 
             if ($pingback->isDeliverable()) {
                 $this->model_payment_paymentwall->callDeliveryApi($order, $pingback->getReferenceId());
