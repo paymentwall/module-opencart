@@ -30,7 +30,7 @@ class ControllerCheckoutPingback extends Controller
             $this->getCheckoutOrderModel()->confirm($order['order_id'], $defaultConfigs['config_order_status_id']);
         }
 
-        if ($pingback->validate()) {
+        if ($pingback->validate(true)) {
 
             if ($pingback->isDeliverable()) {
                 $this->getPaymentModel()->callDeliveryApi($order, $pingback->getReferenceId());
