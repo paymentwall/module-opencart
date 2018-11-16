@@ -27,7 +27,7 @@ class ControllerCheckoutPingback extends Controller
             $this->getCheckoutOrderModel()->addOrderHistory($order['order_id'], $defaultConfigs['config_order_status_id'], '', true);
         }
 
-        if ($pingback->validate()) {
+        if ($pingback->validate(true)) {
             if ($pingback->isDeliverable()) {
                 $this->getPaymentModel()->callDeliveryApi($order, $pingback->getReferenceId());
                 if ($order['order_status_id'] != $this->config->get('payment_' . $order['payment_code'] . '_complete_status')) {
