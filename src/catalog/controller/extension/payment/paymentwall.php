@@ -53,6 +53,12 @@ class ControllerExtensionPaymentPaymentwall extends Controller
         }
 
         $data = $this->prepareViewData($orderInfo, $this->customer);
+
+        $redirectPayment = $this->config->get('payment_paymentwall_redirect_payment');
+        if (!empty($data['pw_widget_url']) && $redirectPayment) {
+            header('Location: ' . $data['pw_widget_url']);
+            exit();
+        }
         
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/paymentwall_widget')) {
             $template = $this->config->get('config_template') . '/template/extension/payment/paymentwall_widget';
@@ -68,6 +74,13 @@ class ControllerExtensionPaymentPaymentwall extends Controller
     protected function prepareViewData($orderInfo, $customer)
     {
         $this->document->setTitle($this->language->get('widget_title'));
+
+        if (!empty($this->config->get('payment_paymentwall_success_url'))) {
+            $successUrl = $this->config->get('payment_paymentwall_success_url');
+        } else {
+            $successUrl = $this->url->link('checkout/success', '' ,true);
+        }
+
         $data['breadcrumbs'] = array(
             array(
                 'href' => $this->url->link('common/home'),
@@ -83,7 +96,9 @@ class ControllerExtensionPaymentPaymentwall extends Controller
 
         $data['widget_title'] = $this->language->get('widget_title');
         $data['widget_notice'] = $this->language->get('widget_notice');
-        $data['iframe'] = $this->model_extension_payment_paymentwall->generateWidget($orderInfo, $customer, $this->config->get('payment_paymentwall_success_url'));
+        $pwWidget = $this->model_extension_payment_paymentwall->generateWidget($orderInfo, $customer, $successUrl);
+        $data['iframe'] = $this->model_extension_payment_paymentwall->generateWidgetCode($pwWidget);
+        $data['pw_widget_url'] = $this->model_extension_payment_paymentwall->generateWidgetUrl($pwWidget);
 
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');

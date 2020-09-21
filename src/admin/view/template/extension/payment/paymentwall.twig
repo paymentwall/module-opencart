@@ -75,6 +75,15 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="col-sm-2 control-label" for="payment_paymentwall_redirect_payment">{{ text_redirect_payment }}</label>
+                        <div class="col-sm-10">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" class="form-control" name="payment_paymentwall_redirect_payment" {% if payment_paymentwall_redirect_payment %} checked {% endif %} value="1"/>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="col-sm-2 control-label" for="payment_paymentwall_cancel_status">{{ entry_cancel_status }} </label>
                         <div class="col-sm-10">
                             <select name="payment_paymentwall_cancel_status" id="payment_paymentwall_cancel_status" class="form-control">
