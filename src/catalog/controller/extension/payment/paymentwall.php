@@ -75,9 +75,8 @@ class ControllerExtensionPaymentPaymentwall extends Controller
     {
         $this->document->setTitle($this->language->get('widget_title'));
 
-        if (!empty($this->config->get('payment_paymentwall_success_url'))) {
-            $successUrl = $this->config->get('payment_paymentwall_success_url');
-        } else {
+        $successUrl = $this->config->get('payment_paymentwall_success_url');
+        if (empty($successUrl)) {
             $successUrl = $this->url->link('checkout/success', '' ,true);
         }
 
