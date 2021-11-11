@@ -16,6 +16,7 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             'payment_paymentwall_delivery' => 1,
             'payment_paymentwall_status' => 1, //Pending
             'payment_paymentwall_sort_order' => 1,
+            'payment_paymentwall_use_hosted_page' => 1,
         ));
     }
 
@@ -82,8 +83,8 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             'entry_test' => $this->language->get('entry_test'),
             'entry_delivery' => $this->language->get('entry_delivery'),
             'entry_success_url' => $this->language->get('entry_success_url'),
-            'entry_sort_order' => $this->language->get('entry_sort_order'),
             'entry_active' => $this->language->get('entry_active'),
+            'entry_use_hosted_page' => $this->language->get('entry_use_hosted_page'),
 
             'button_save' => $this->language->get('button_save'),
             'button_cancel' => $this->language->get('button_cancel')
@@ -168,6 +169,10 @@ class ControllerExtensionPaymentPaymentwall extends Controller
         $data['payment_paymentwall_sort_order'] = $this->getPostData(
             'payment_paymentwall_sort_order',
             $this->config->get('payment_paymentwall_sort_order'));
+
+        $data['payment_paymentwall_use_hosted_page'] = $this->getPostData(
+            'payment_paymentwall_use_hosted_page',
+            $this->config->get('payment_paymentwall_use_hosted_page'));
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');

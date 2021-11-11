@@ -99,13 +99,8 @@ class ModelExtensionPaymentPaymentwall extends Model
                 ),
                 $this->getUserProfileData($orderInfo)
             ));
-        
-        
-        return $widget->getHtmlCode(array(
-            'width' => '100%',
-            'height' => 600,
-            'frameborder' => 0
-        ));
+
+        return $widget;
     }
     private function getUserProfileData($orderInfo)
     {
