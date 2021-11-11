@@ -53,15 +53,20 @@ class ControllerExtensionPaymentPaymentwall extends Controller
         }
 
         $data = $this->prepareViewData($orderInfo, $this->customer);
-        
+        if ($this->config->get('payment_paymentwall_use_hosted_page')) {
+            if (filter_var($data['widget']->getUrl(), FILTER_VALIDATE_URL)) {
+                $this->response->redirect($data['widget']->getUrl());
+                return;
+            }
+        }
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/paymentwall_widget')) {
             $template = $this->config->get('config_template') . '/template/extension/payment/paymentwall_widget';
-        } else { 
+        } else {
             $template = 'extension/payment/paymentwall_widget';
         }
-        
+
         $viewData = $this->load->view($template, $data);
-        
+
         $this->response->setOutput($viewData);
     }
 
@@ -83,8 +88,12 @@ class ControllerExtensionPaymentPaymentwall extends Controller
 
         $data['widget_title'] = $this->language->get('widget_title');
         $data['widget_notice'] = $this->language->get('widget_notice');
-        $data['iframe'] = $this->model_extension_payment_paymentwall->generateWidget($orderInfo, $customer, $this->config->get('payment_paymentwall_success_url'));
-
+        $data['widget'] = $this->model_extension_payment_paymentwall->generateWidget($orderInfo, $customer, $this->config->get('payment_paymentwall_success_url'));
+        $data['iframe'] = $data['widget']->getHtmlCode(array(
+            'width' => '100%',
+            'height' => 600,
+            'frameborder' => 0
+        ));
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');
         $data['content_top'] = $this->load->controller('common/content_top');
