@@ -33,7 +33,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="payment_paymentwall_key">{{ entry_key }} </label>
                         <div class="col-sm-10">
-                            <input type="text" name="payment_paymentwall_key" value="{{ payment_paymentwall_key }}" id="payment_paymentwall_key" class="form-control"/>
+                            <input type="text" name="payment_paymentwall_key" value="{{ payment_paymentwall_key }} " id="payment_paymentwall_key" class="form-control"/>
                             {% if error_key %}
                             <div class="text-danger">{{ error_key }} </div>
                             {% endif %} 
@@ -43,7 +43,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="payment_paymentwall_secret">{{ entry_secret }} </label>
                         <div class="col-sm-10">
-                            <input type="text" name="payment_paymentwall_secret" value="{{ payment_paymentwall_secret }}" id="payment_paymentwall_secret" class="form-control"/>
+                            <input type="text" name="payment_paymentwall_secret" value="{{ payment_paymentwall_secret }} " id="payment_paymentwall_secret" class="form-control"/>
                             {% if error_secret %} 
                             <div class="text-danger">{{ error_secret }} </div>
                             {% endif %} 
@@ -53,7 +53,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="payment_paymentwall_widget">{{ entry_widget }} </label>
                         <div class="col-sm-10">
-                            <input type="text" name="payment_paymentwall_widget" value="{{ payment_paymentwall_widget }}" id="payment_paymentwall_widget" class="form-control"/>
+                            <input type="text" name="payment_paymentwall_widget" value="{{ payment_paymentwall_widget }} " id="payment_paymentwall_widget" class="form-control"/>
                             {% if error_widget %} 
                             <div class="text-danger">{{ error_widget }} </div>
                             {% endif %} 
@@ -126,14 +126,14 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="payment_paymentwall_success_url">{{ entry_success_url }} </label>
                         <div class="col-sm-10">
-                            <input type="text" name="payment_paymentwall_success_url" value="{{ payment_paymentwall_success_url }}" id="payment_paymentwall_success_url" class="form-control"/>
+                            <input type="text" name="payment_paymentwall_success_url" value="{{ payment_paymentwall_success_url }} " id="payment_paymentwall_success_url" class="form-control"/>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="payment_paymentwall_sort_order">{{ entry_sort_order }} </label>
                         <div class="col-sm-10">
-                            <input type="text" name="payment_paymentwall_sort_order" value="{{ payment_paymentwall_sort_order }}" id="payment_paymentwall_sort_order" class="form-control"/>
+                            <input type="text" name="payment_paymentwall_sort_order" value="{{ payment_paymentwall_sort_order }} " id="payment_paymentwall_sort_order" class="form-control"/>
                         </div>
                     </div>
 
@@ -148,21 +148,6 @@
                                 <option value="1">{{ text_enabled }} </option>
                                 <option value="0" selected="selected">{{ text_disabled }} </option>
                                 {% endif %} 
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" for="payment_paymentwall_use_hosted_page">{{ entry_use_hosted_page }} </label>
-                        <div class="col-sm-10">
-                            <select name="payment_paymentwall_use_hosted_page" class="form-control">
-                                {% if payment_paymentwall_use_hosted_page %}
-                                <option value="1" selected="selected">{{ text_yes }} </option>
-                                <option value="0">{{ text_no }} </option>
-                                {% else %}
-                                <option value="1">{{ text_yes }} </option>
-                                <option value="0" selected="selected">{{ text_no }} </option>
-                                {% endif %}
                             </select>
                         </div>
                     </div>
