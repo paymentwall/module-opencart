@@ -76,7 +76,9 @@ class ModelExtensionPaymentPaymentwall extends Model
     {
         // Init Paymentwall configs
         $this->initConfig();
-        $successUrl = $this->url->link('account/order');
+        $successUrl = $successUrl
+            ? $successUrl
+            : $this->config->get('payment_paymentwall_success_url');
         $total = $orderInfo['currency_value'] > 0 ? $orderInfo['total'] * $orderInfo['currency_value'] : $orderInfo['total']; // when currency_value <= 0 changes to 1
         $widget = new Paymentwall_Widget(
             !empty($customer->getId()) ? $customer->getId() : $orderInfo['email'],
@@ -97,8 +99,13 @@ class ModelExtensionPaymentPaymentwall extends Model
                 ),
                 $this->getUserProfileData($orderInfo)
             ));
-
-        return $widget;
+        
+        
+        return $widget->getHtmlCode(array(
+            'width' => '100%',
+            'height' => 600,
+            'frameborder' => 0
+        ));
     }
     private function getUserProfileData($orderInfo)
     {
