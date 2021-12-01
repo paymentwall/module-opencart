@@ -54,8 +54,8 @@ class ControllerExtensionPaymentPaymentwall extends Controller
 
         $data = $this->prepareViewData($orderInfo, $this->customer);
         if ($this->config->get('payment_paymentwall_use_hosted_page')) {
-            if (filter_var($data['url'], FILTER_VALIDATE_URL)) {
-                $this->response->redirect($data['url']);
+            if (filter_var($data['widget_url'], FILTER_VALIDATE_URL)) {
+                $this->response->redirect($data['widget_url']);
                 return;
             }
         }
@@ -94,7 +94,7 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             'height' => 600,
             'frameborder' => 0
         ));
-        $data['url'] = $widget->getUrl();
+        $data['widget_url'] = $widget->getUrl();
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');
         $data['content_top'] = $this->load->controller('common/content_top');
