@@ -16,7 +16,6 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             'payment_paymentwall_delivery' => 1,
             'payment_paymentwall_status' => 1, //Pending
             'payment_paymentwall_sort_order' => 1,
-            'payment_paymentwall_redirect_payment' => 1,
         ));
     }
 
@@ -68,7 +67,6 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             'text_disabled' => $this->language->get('text_disabled'),
             'text_yes' => $this->language->get('text_yes'),
             'text_no' => $this->language->get('text_no'),
-            'text_redirect_payment' => $this->language->get('text_redirect_payment'),
 
             'entry_key' => $this->language->get('entry_key'),
             'entry_secret' => $this->language->get('entry_secret'),
@@ -78,7 +76,6 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             'entry_order_status' => $this->language->get('entry_order_status'),
             'entry_geo_zone' => $this->language->get('entry_geo_zone'),
             'entry_status' => $this->language->get('entry_status'),
-            'entry_sort_order' => $this->language->get('entry_sort_order'),
             'entry_complete_status' => $this->language->get('entry_complete_status'),
             'entry_cancel_status' => $this->language->get('entry_cancel_status'),
             'entry_test' => $this->language->get('entry_test'),

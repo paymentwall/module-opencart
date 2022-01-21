@@ -53,12 +53,6 @@ class ControllerExtensionPaymentPaymentwall extends Controller
         }
 
         $data = $this->prepareViewData($orderInfo, $this->customer);
-
-        $redirectPayment = $this->config->get('payment_paymentwall_redirect_payment');
-        if (!empty($data['pw_widget_url']) && $redirectPayment) {
-            header('Location: ' . $data['pw_widget_url']);
-            exit();
-        }
         
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/paymentwall_widget')) {
             $template = $this->config->get('config_template') . '/template/extension/payment/paymentwall_widget';

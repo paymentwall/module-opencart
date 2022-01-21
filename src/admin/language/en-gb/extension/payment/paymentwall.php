@@ -7,7 +7,6 @@ $_['text_edit'] = 'Edit Paymentwall Settings';
 $_['text_payment'] = 'Payment';
 $_['text_success'] = 'Success: You have modified Paymentwall payment gateway settings!';
 $_['text_paymentwall'] = '<a target="_blank" href="https://api.paymentwall.com/pwaccount/signup?source=opencart&mode=merchant"><img src="view/image/payment/paymentwall_logo.png" alt="Create your Paymentwall account" title="Create your Paymentwall account" style="width: 150px;"/></a>';
-$_['text_redirect_payment'] = 'Redirect payment';
 
 // Entry
 $_['entry_key'] = 'Project key:';
