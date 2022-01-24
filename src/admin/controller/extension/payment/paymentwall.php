@@ -168,11 +168,6 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             'payment_paymentwall_sort_order',
             $this->config->get('payment_paymentwall_sort_order'));
 
-        $data['payment_paymentwall_redirect_payment'] = $this->getPostData(
-            'payment_paymentwall_redirect_payment',
-            $this->config->get('payment_paymentwall_redirect_payment')
-        );
-
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
