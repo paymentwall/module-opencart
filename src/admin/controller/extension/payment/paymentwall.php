@@ -66,7 +66,7 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             'text_enabled' => $this->language->get('text_enabled'),
             'text_disabled' => $this->language->get('text_disabled'),
             'text_yes' => $this->language->get('text_yes'),
-            'text_no' => $this->language->get('text_no'),
+            'text_no' => $this->language->get('text_no'),           
 
             'entry_key' => $this->language->get('entry_key'),
             'entry_secret' => $this->language->get('entry_secret'),
