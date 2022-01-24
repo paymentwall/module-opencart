@@ -100,13 +100,29 @@ class ModelExtensionPaymentPaymentwall extends Model
                 $this->getUserProfileData($orderInfo)
             ));
         
-        
+        return $widget;
+    }
+
+    public function generateWidgetCode($widget) {
+        if (empty($widget) || !($widget instanceof Paymentwall_Widget)) {
+            return '';
+        }
+
         return $widget->getHtmlCode(array(
             'width' => '100%',
             'height' => 600,
             'frameborder' => 0
         ));
     }
+
+    public function generateWidgetUrl($widget) {
+        if (empty($widget) || !($widget instanceof Paymentwall_Widget)) {
+            return '';
+        }
+
+        return $widget->getUrl();
+    }
+
     private function getUserProfileData($orderInfo)
     {
         return array(
