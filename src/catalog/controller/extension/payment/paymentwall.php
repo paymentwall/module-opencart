@@ -68,6 +68,12 @@ class ControllerExtensionPaymentPaymentwall extends Controller
     protected function prepareViewData($orderInfo, $customer)
     {
         $this->document->setTitle($this->language->get('widget_title'));
+
+        $successUrl = $this->config->get('payment_paymentwall_success_url');
+        if (empty($successUrl)) {
+            $successUrl = $this->url->link('checkout/success', '' ,true);
+        }
+
         $data['breadcrumbs'] = array(
             array(
                 'href' => $this->url->link('common/home'),
@@ -83,6 +89,11 @@ class ControllerExtensionPaymentPaymentwall extends Controller
 
         $data['widget_title'] = $this->language->get('widget_title');
         $data['widget_notice'] = $this->language->get('widget_notice');
+
+        $pwWidget = $this->model_extension_payment_paymentwall->generateWidget($orderInfo, $customer, $successUrl);
+        $data['iframe'] = $this->model_extension_payment_paymentwall->generateWidgetCode($pwWidget);
+        $data['pw_widget_url'] = $this->model_extension_payment_paymentwall->generateWidgetUrl($pwWidget);
+
         $data['iframe'] = $this->model_extension_payment_paymentwall->generateWidget($orderInfo, $customer, $this->config->get('payment_paymentwall_success_url'));
 
         $data['column_left'] = $this->load->controller('common/column_left');
