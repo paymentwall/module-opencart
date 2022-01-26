@@ -5,6 +5,10 @@ if (!class_exists('Paymentwall_Config'))
 
 class ModelExtensionPaymentPaymentwall extends Model
 {
+    const WIDGET_WIDTH = '100%';
+    const WIDGET_HEIGHT = 600;
+    const WIDGET_FRAMEBORDER = 0;
+
     public function getMethod($address, $total)
     {
         $this->load->language('extension/payment/paymentwall');
@@ -109,9 +113,9 @@ class ModelExtensionPaymentPaymentwall extends Model
         }
 
         return $widget->getHtmlCode(array(
-            'width' => '100%',
-            'height' => 600,
-            'frameborder' => 0
+            'width' => self::WIDGET_WIDTH,
+            'height' => self::WIDGET_HEIGHT,
+            'frameborder' => self::WIDGET_FRAMEBORDER
         ));
     }
 
