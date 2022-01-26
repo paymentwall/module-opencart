@@ -5,6 +5,10 @@ if (!class_exists('Paymentwall_Config'))
 
 class ModelExtensionPaymentPaymentwall extends Model
 {
+    const WIDGET_WIDTH = '100%';
+    const WIDGET_HEIGHT = 600;
+    const WIDGET_FRAMEBORDER = 0;
+
     public function getMethod($address, $total)
     {
         $this->load->language('extension/payment/paymentwall');
@@ -99,9 +103,30 @@ class ModelExtensionPaymentPaymentwall extends Model
                 ),
                 $this->getUserProfileData($orderInfo)
             ));
-
+        
         return $widget;
     }
+
+    public function generateWidgetCode($widget) {
+        if (empty($widget) || !($widget instanceof Paymentwall_Widget)) {
+            return '';
+        }
+
+        return $widget->getHtmlCode(array(
+            'width' => self::WIDGET_WIDTH,
+            'height' => self::WIDGET_HEIGHT,
+            'frameborder' => self::WIDGET_FRAMEBORDER
+        ));
+    }
+
+    public function generateWidgetUrl($widget) {
+        if (empty($widget) || !($widget instanceof Paymentwall_Widget)) {
+            return '';
+        }
+
+        return $widget->getUrl();
+    }
+
     private function getUserProfileData($orderInfo)
     {
         return array(
