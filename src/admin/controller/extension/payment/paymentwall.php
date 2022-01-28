@@ -82,6 +82,7 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             'entry_test' => $this->language->get('entry_test'),
             'entry_delivery' => $this->language->get('entry_delivery'),
             'entry_success_url' => $this->language->get('entry_success_url'),
+            'entry_sort_order' => $this->language->get('entry_sort_order'),
             'entry_active' => $this->language->get('entry_active'),
             'entry_use_hosted_page' => $this->language->get('entry_use_hosted_page'),
 
