@@ -76,7 +76,6 @@ class ControllerExtensionPaymentPaymentwall extends Controller
             'entry_order_status' => $this->language->get('entry_order_status'),
             'entry_geo_zone' => $this->language->get('entry_geo_zone'),
             'entry_status' => $this->language->get('entry_status'),
-            'entry_sort_order' => $this->language->get('entry_sort_order'),
             'entry_complete_status' => $this->language->get('entry_complete_status'),
             'entry_cancel_status' => $this->language->get('entry_cancel_status'),
             'entry_test' => $this->language->get('entry_test'),
