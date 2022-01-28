@@ -94,8 +94,11 @@ class ControllerExtensionPaymentPaymentwall extends Controller
 
         $data['widget_title'] = $this->language->get('widget_title');
         $data['widget_notice'] = $this->language->get('widget_notice');
-        $data['iframe'] = $this->model_extension_payment_paymentwall->generateWidget($orderInfo, $customer, $successUrl);
 
+        $widget = $this->model_extension_payment_paymentwall->generateWidget($orderInfo, $customer, $successUrl);
+        $data['iframe'] = $this->model_extension_payment_paymentwall->generateWidgetCode($widget);
+        $data['widget_url'] = $this->model_extension_payment_paymentwall->generateWidgetUrl($widget);
+        
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');
         $data['content_top'] = $this->load->controller('common/content_top');
